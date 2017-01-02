@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package donnoe.amanda;
 
 /**
@@ -11,7 +6,27 @@ package donnoe.amanda;
  */
 public class Constant extends Blob {
     public static Constant readConstant(ClassFile cF, int index) {
-//        throw new AssertionError
-        throw new UnsupportedOperationException();
+        int b = cF.readUnsignedByte();
+        switch (b) {
+            case 0x01:
+                return new UTFConstant(cF);
+            case 0x07:
+            case 0x08:
+                return new SingleWordConstant(cF);
+            case 0x09:
+            case 0x0A:
+            case 0x0B:
+                return new ReferenceConstant(cF);
+            case 0x0C:
+                return new NameAndTypeConstant(cF);
+            case 0x0F:
+                return new MethodHandleConstant(cF);
+            case 0x10:
+                return new MethodTypeConstant(cF);
+            case 0x12:
+                return new InvokeDynamicConstant(cF);
+            default:
+                throw new UnsupportedOperationException(String.format("0x%02X", b));
+        }
     }
 }

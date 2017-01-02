@@ -20,7 +20,7 @@ public final class ClassFile extends Blob {
         }
         INSTANCE.println(String.format("0x%X%n%3$s.%s", readInt(), readUnsignedShort(), readUnsignedShort()));
         readConstants();
-        
+        INSTANCE.println(constantsMap().size());
     }
 
     private DataInputStream in;
@@ -29,6 +29,10 @@ public final class ClassFile extends Blob {
     
     public Map<Integer, Future<Constant>> constantsMap() {
         return constantsMap.peek();
+    }
+    
+    public String readUTF() {
+        return read(dis -> dis.readUTF());
     }
     
     public int readInt() {
@@ -41,6 +45,10 @@ public final class ClassFile extends Blob {
     
     public int readUnsignedByte() {
         return read(DataInputStream::readUnsignedByte);
+    }
+    
+    public int skip(int n) {
+        return read(dis -> dis.skipBytes(n));
     }
     
     private <T> T read(ExceptionalFunction<DataInputStream, T, IOException> f) {
