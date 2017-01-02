@@ -52,4 +52,8 @@ public enum Amanda implements Function<String, String> {
         stream.println(o);
     }
 
+    public <B extends Blob> Future<B> queueForResolution(B b) {
+        return exec.submit(() -> b.resolve(), b);
+    }
+    
 }

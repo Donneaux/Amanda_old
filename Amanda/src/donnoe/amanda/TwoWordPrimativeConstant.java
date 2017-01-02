@@ -9,9 +9,6 @@ package donnoe.amanda;
  *
  * @author joshuadonnoe
  */
-public class Constant extends Blob {
-    public static Constant readConstant(ClassFile cF, int index) {
-//        throw new AssertionError
-        throw new UnsupportedOperationException();
-    }
+public class TwoWordPrimativeConstant extends Constant {
+    
 }
