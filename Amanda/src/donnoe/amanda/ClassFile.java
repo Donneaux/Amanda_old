@@ -39,6 +39,10 @@ public final class ClassFile extends Blob {
         return read(DataInputStream::readUnsignedShort);
     }
     
+    public int readUnsignedByte() {
+        return read(DataInputStream::readUnsignedByte);
+    }
+    
     private <T> T read(ExceptionalFunction<DataInputStream, T, IOException> f) {
         try {
             return f.apply(in);
