@@ -18,9 +18,12 @@ public enum Amanda implements Function<String, String> {
     private PrintStream stream;
 
     public static void main(String[] args) {
-        isVerbose = args.length > 1;
-        System.out.println(INSTANCE.apply(args[0]));
-        INSTANCE.exec.shutdown();
+        try {
+            isVerbose = args.length > 1;
+            System.out.println(INSTANCE.apply(args[0]));
+        } finally {
+            INSTANCE.exec.shutdownNow();
+        }
     }
 
     /**
