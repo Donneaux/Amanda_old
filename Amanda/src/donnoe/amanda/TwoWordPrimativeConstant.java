@@ -1,14 +1,21 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package donnoe.amanda;
 
 /**
  *
  * @author joshuadonnoe
  */
-public class TwoWordPrimativeConstant extends Constant {
+public class TwoWordPrimativeConstant extends PrimativeConstant {
+
+    public TwoWordPrimativeConstant(String s) {
+        super(s);
+    }
     
+    public static TwoWordPrimativeConstant readLongConstant(ClassFile cF) {
+        return new TwoWordPrimativeConstant(String.format("%dl", cF.readLong()));
+    }
+    
+    public static TwoWordPrimativeConstant readDoubleConstant(ClassFile cF) {
+        double d = cF.readDouble();
+        return new TwoWordPrimativeConstant(Double.isInfinite(d) ? (String.format("Double.%sTIVE_INFINITY", d > 0 ? "POSI" : "NEGA")) : (Double.isNaN(d) ? "Double.Nan" : String.format("%fd", d)));
+    }
 }

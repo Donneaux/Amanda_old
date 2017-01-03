@@ -38,6 +38,18 @@ public final class ClassFile extends Blob {
         return read(dis -> dis.readUTF());
     }
     
+    public double readDouble() {
+        return read(DataInputStream::readDouble);
+    }
+    
+    public long readLong() {
+        return read(DataInputStream::readLong);
+    }
+    
+    public float readFloat() {
+        return read(DataInputStream::readFloat);
+    }
+    
     public int readInt() {
         return read(DataInputStream::readInt);
     }

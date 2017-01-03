@@ -18,6 +18,7 @@ public enum Amanda implements Function<String, String> {
     private PrintStream stream;
 
     public static void main(String[] args) {
+        double i = 1 << (1 << 4);
         try {
             isVerbose = args.length > 1;
             System.out.println(INSTANCE.apply(args[0]));

@@ -10,6 +10,14 @@ public class Constant extends Blob {
         switch (b) {
             case 0x01:
                 return new UTFConstant(cF);
+            case 0x03:
+                return PrimativeConstant.readIntegerConstant(cF);
+            case 0x04:
+                return PrimativeConstant.readFloatConstant(cF);
+            case 0x05:
+                return TwoWordPrimativeConstant.readLongConstant(cF);
+            case 0x06:
+                return TwoWordPrimativeConstant.readDoubleConstant(cF);
             case 0x07:
             case 0x08:
                 return new SingleWordConstant(cF);
