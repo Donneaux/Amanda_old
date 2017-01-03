@@ -1,13 +1,17 @@
 package donnoe.amanda;
 
+import java.util.concurrent.Future;
+
 /**
  *
  * @author joshuadonnoe
  */
-public class SingleWordConstant extends Constant {
+public abstract class SingleWordConstant extends Constant {
 
+    protected final Future<UTFConstant> utfFuture;
+    
     public SingleWordConstant(ClassFile cF) {
-        cF.skip(2);
+        utfFuture = cF.readConstantFuture();
     }
     
 }
