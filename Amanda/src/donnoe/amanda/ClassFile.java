@@ -25,6 +25,9 @@ public final class ClassFile extends Blob {
 
     private DataInputStream in;
     
+    /**
+     * this allows me to reference the constant map "before i finish making it"
+     */
     private final BlockingQueue<Map<Integer, Future<Constant>>> constantsMap = new ArrayBlockingQueue<>(1);
     
     public Map<Integer, Future<Constant>> constantsMap() {
