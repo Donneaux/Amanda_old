@@ -1,5 +1,7 @@
 package donnoe.amanda;
 
+import donnoe.util.FutureStatus;
+import donnoe.util.Futures;
 import java.io.*;
 import java.util.concurrent.*;
 
@@ -23,7 +25,6 @@ public enum Amanda {
                 }
             });
             System.out.println(INSTANCE.queueForResolution(new ClassFile(args[0])).get());
-
         } catch (ExecutionException | InterruptedException x) {
             throw new Error(x);
         } finally {
@@ -46,7 +47,16 @@ public enum Amanda {
     }
 
     public <B extends Blob> Future<B> queueForResolution(B b) {
-        return exec.submit(() -> b.resolve(), b);
+        return exec.submit(
+                () -> {
+                    try {
+                        b.resolve();
+                    } catch (ExecutionException | InterruptedException x) {
+                        throw new IllegalStateException(x);
+                    }
+                }
+                , b
+        );
     }
 
 }
