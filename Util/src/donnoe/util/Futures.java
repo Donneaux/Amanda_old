@@ -9,7 +9,13 @@ import java.util.concurrent.Future;
 public class Futures {
     private Futures() {}
     
-    public static <T> T getNow(Future<T> f) {
+    public static <V> V getNow(Future<V> f) {
         return FutureStatus.getNow(f);
+    }
+    
+    public static <V> Future<V> cast(Future<?> f) {
+        @SuppressWarnings("unchecked") Future<V> rv = 
+        (Future<V>) f;
+        return rv;
     }
 }

@@ -19,8 +19,9 @@ public abstract class Constant extends Blob {
             case 0x06:
                 return TwoWordPrimativeConstant.readDoubleConstant(cF);
             case 0x07:
+                return new ClassConstant(cF, index);
             case 0x08:
-                return new SingleWordConstant(cF);
+                return new UTFBasedConstant(cF);
             case 0x09:
             case 0x0A:
             case 0x0B:

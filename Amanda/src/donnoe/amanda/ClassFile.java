@@ -91,6 +91,13 @@ public final class ClassFile extends Blob {
         });
     }
 
+    public <C extends Constant> Future<C> readConstantFuture() {
+        return Futures.cast(constantsMap.get(readUnsignedShort()));
+    }
+    
+//    public Future<String> readStringFuture() {
+//    }
+    
     @Override
     public void resolve() throws ExecutionException, InterruptedException {
         constantsMap.forEach(
