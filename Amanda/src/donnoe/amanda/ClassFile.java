@@ -20,7 +20,6 @@ public final class ClassFile extends Blob {
         }
         INSTANCE.println(String.format("0x%X%n%3$s.%s", readInt(), readUnsignedShort(), readUnsignedShort()));
         readConstants();
-        INSTANCE.println(constantsMap().size());
     }
 
     private DataInputStream in;
@@ -97,4 +96,11 @@ public final class ClassFile extends Blob {
             q.add(INSTANCE.queueForResolution(constant));
         });
     }
+
+    @Override
+    public void resolve() {
+        sb.append(constantsMap().size());
+    }
+    
+    
 }

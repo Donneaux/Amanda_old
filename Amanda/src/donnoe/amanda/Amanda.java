@@ -2,44 +2,33 @@ package donnoe.amanda;
 
 import java.io.*;
 import java.util.concurrent.*;
-import java.util.function.Function;
 
 /**
  *
  * @author joshuadonnoe
  */
-public enum Amanda implements Function<String, String> {
+public enum Amanda {
     INSTANCE;
 
     public final ExecutorService exec = Executors.newCachedThreadPool();
 
-    private static boolean isVerbose;
-
-    private PrintStream stream;
+    private static PrintStream stream;
 
     public static void main(String[] args) {
         double i = 1 << (1 << 4);
         try {
-            isVerbose = args.length > 1;
-            System.out.println(INSTANCE.apply(args[0]));
+            stream = args.length > 1 ? System.err : new PrintStream(new OutputStream() {
+                @Override
+                public void write(int b) throws IOException {
+                }
+            });
+            System.out.println(INSTANCE.queueForResolution(new ClassFile(args[0])).get());
+
+        } catch (ExecutionException | InterruptedException x) {
+            throw new Error(x);
         } finally {
             INSTANCE.exec.shutdownNow();
         }
-    }
-
-    /**
-     * Set by entry point as either stderr or dev/null
-     */
-    @Override
-    public String apply(String t) {
-
-        //better to check the bool once rather than every time
-        stream = isVerbose ? System.err : new PrintStream(new OutputStream() {
-            @Override
-            public void write(int b) throws IOException {
-            }
-        });
-        return new ClassFile(t).toString();
     }
 
     /**
@@ -59,5 +48,5 @@ public enum Amanda implements Function<String, String> {
     public <B extends Blob> Future<B> queueForResolution(B b) {
         return exec.submit(() -> b.resolve(), b);
     }
-    
+
 }

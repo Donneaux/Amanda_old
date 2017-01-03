@@ -4,10 +4,13 @@ package donnoe.amanda;
  *
  * @author joshuadonnoe
  */
-public class UTFConstant extends Constant {
+public final class UTFConstant extends Constant {
 
     public UTFConstant(ClassFile cF) {
-        cF.readUTF();
+        sb.append(cF.readUTF());
     }
-    
+
+    @Override
+    public void resolve() {
+    }
 }
