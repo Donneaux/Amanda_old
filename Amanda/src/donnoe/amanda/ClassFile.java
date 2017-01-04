@@ -70,15 +70,10 @@ public final class ClassFile extends Blob {
 
     private void readConstants() {
         Map<Integer, BlockingQueue<Future<Constant>>> qs = IntStream.range(1, readUnsignedShort()).boxed().collect(Collectors.toMap(i -> i, i -> new ArrayBlockingQueue<>(1)));
-        constantsMap = qs.entrySet().stream()
-                .collect(
-                        Collectors.toMap(
-                                Map.Entry::getKey,
-                                e -> Amanda.INSTANCE.exec.submit(
-                                        () -> e.getValue().take().get()
-                                )
-                        )
-                );
+        constantsMap = qs.entrySet().stream().collect(Collectors.toMap(
+                Map.Entry::getKey,
+                e -> Amanda.INSTANCE.exec.submit(() -> e.getValue().take().get())
+        ));
         qs.forEach((index, q) -> {
             if (!constantsMap.containsKey(index)) {
                 return;
@@ -95,8 +90,9 @@ public final class ClassFile extends Blob {
         return Futures.cast(constantsMap.get(readUnsignedShort()));
     }
     
-//    public Future<String> readStringFuture() {
-//    }
+    public Future<String> readStringFuture() {
+        return Futures.transform(readConstantFuture(), Object::toString);
+    }
     
     @Override
     public void resolve() throws ExecutionException, InterruptedException {

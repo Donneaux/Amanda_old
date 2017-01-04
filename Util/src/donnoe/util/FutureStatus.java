@@ -11,26 +11,26 @@ import java.util.concurrent.Future;
  * @author joshuadonnoe
  */
 public enum FutureStatus {
-    CANCELLED {
+    CANCELLED(ValueStatus.DOES_NOT_EXIST) {
         @Override
         public <V> V getNowHelper(Future<V> f) {
             throw new CancellationException();
         }
     },
-    THREW_EXCEPTION {
+    THREW_EXCEPTION(ValueStatus.DOES_NOT_EXIST) {
         @Override
         public <V> V getNowHelper(Future<V> f) {
             throw new IllegalArgumentException(exceptions.get(f));
         }
     },
-    WAITING {
+    WAITING(ValueStatus.PENDING) {
         @Override
         public <V> V getNowHelper(Future<V> f) {
             throw new IllegalStateException("Future is not finished");
         }
         
     },
-    COMPLETED {
+    COMPLETED(ValueStatus.KNOWN) {
         @Override
         public <V> V getNowHelper(Future<V> f) {
             @SuppressWarnings("unchecked")
@@ -39,12 +39,20 @@ public enum FutureStatus {
         }
     };
     
+    final ValueStatus valueStatus;
+
+    private FutureStatus(ValueStatus valueStatus) {
+        this.valueStatus = valueStatus;
+    }
+    
+    
+
 //unsupported   Thrown to indicate that the requested operation is not supported.
 //argument      Thrown to indicate that a method has been passed an illegal or inappropriate argument.    
 //state         Signals that a method has been invoked at an illegal or inappropriate time. In other words, the Java environment or Java application is not in an appropriate state for the requested operation.
 
 //unsupported   "i can't do that"
-//argument      "i can't do that to this"
+//argument      "i can't do that to these arguments"
 //state         "i can't do that now"    
     
     public static <V> V getNow(Future<V> f) {
