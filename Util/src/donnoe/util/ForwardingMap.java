@@ -87,5 +87,5 @@ abstract public class ForwardingMap<K, V> implements Map<K, V> {
     public final boolean equals(Object obj) {
         return delegate.equals(obj);
     }
-    
+
 }

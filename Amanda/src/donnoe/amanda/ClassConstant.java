@@ -4,6 +4,7 @@ import java.util.concurrent.ExecutionException;
 
 /**
  * Much work needed
+ *
  * @author joshuadonnoe
  */
 public final class ClassConstant extends UTFBasedConstant {

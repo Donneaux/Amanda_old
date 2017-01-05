@@ -89,20 +89,20 @@ public final class ClassFile extends Blob {
     public <C extends Constant> Future<C> readConstantFuture() {
         return Futures.cast(constantsMap.get(readUnsignedShort()));
     }
-    
+
     public Future<String> readStringFuture() {
         return Futures.transform(readConstantFuture(), Object::toString);
     }
-    
+
     @Override
     public void resolve() throws ExecutionException, InterruptedException {
         constantsMap.forEach(
                 (i, f) -> sb.append(
-                    String.format(
-                        "%d = %s%n",
-                        i,
-                        Futures.getNow(f)
-                ))
+                        String.format(
+                                "%d = %s%n",
+                                i,
+                                Futures.getNow(f)
+                        ))
         );
         sb.append(constantsMap.size());
     }

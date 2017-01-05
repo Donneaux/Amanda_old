@@ -18,15 +18,14 @@ public enum Amanda {
 
     public static void main(String[] args) {
         try {
-            stream = args.length > 1 ? err : new PrintStream(
-                new OutputStream() {
+            stream = args.length > 1
+                ? err
+                : new PrintStream(new OutputStream() {
                     @Override
-                    public void write(int b) throws IOException {}
-                }
-            );
-            out.println(INSTANCE.queueForResolution(
-                new ClassFile(args[0])
-            ).get());
+                    public void write(int b) throws IOException {
+                    }
+                });
+            out.println(INSTANCE.queueForResolution(new ClassFile(args[0])).get());
         } catch (ExecutionException | InterruptedException x) {
             throw new Error(x);
         } finally {
@@ -50,14 +49,14 @@ public enum Amanda {
 
     public <B extends Blob> Future<B> queueForResolution(B b) {
         return exec.submit(
-            () -> {
-                try {
-                    b.resolve();
-                } catch (ExecutionException | InterruptedException x) {
-                    throw new IllegalStateException(x);
-                }
-            },
-            b
+                () -> {
+                    try {
+                        b.resolve();
+                    } catch (ExecutionException | InterruptedException x) {
+                        throw new IllegalStateException(x);
+                    }
+                },
+                b
         );
     }
 }

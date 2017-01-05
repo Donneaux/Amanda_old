@@ -7,10 +7,11 @@ import java.util.concurrent.Future;
  * @author joshuadonnoe
  */
 abstract class ForwardingFuture<V> implements Future<V> {
+
     private final Future<?> f;
 
     /**
-     * 
+     *
      * @param f must be untyped so that we can transform f
      */
     ForwardingFuture(Future<?> f) {

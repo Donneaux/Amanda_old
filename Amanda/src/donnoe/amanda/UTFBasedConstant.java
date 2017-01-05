@@ -10,7 +10,7 @@ import java.util.concurrent.Future;
 public class UTFBasedConstant extends Constant {
 
     protected final Future<UTFConstant> utf;
-    
+
     public UTFBasedConstant(ClassFile cF) {
         utf = cF.readConstantFuture();
     }

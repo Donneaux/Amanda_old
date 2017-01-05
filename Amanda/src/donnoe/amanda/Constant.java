@@ -5,6 +5,7 @@ package donnoe.amanda;
  * @author joshuadonnoe
  */
 public abstract class Constant extends Blob {
+
     public static Constant readConstant(ClassFile cF, int index) {
         int b = cF.readUnsignedByte();
         switch (b) {

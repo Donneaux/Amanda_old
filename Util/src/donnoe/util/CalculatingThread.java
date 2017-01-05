@@ -8,36 +8,28 @@ import static donnoe.util.ValueStatus.*;
 /**
  *
  * @author joshuadonnoe
- * @param <T>
+ * @param <V>
  */
-final class CalculatingThread<T> extends Thread {
+final class CalculatingThread<V> extends Thread {
 
-    protected T t;
+    protected V v;
 
-    protected Throwable x;//this is used when we get 
+    protected Exception x;
 
     protected ValueStatus status = PENDING;
 
-    private final Callable<T> callable;
+    private final Callable<V> callable;
 
-    public CalculatingThread(Callable<T> callable) {
+    public CalculatingThread(Callable<V> callable) {
         this.callable = callable;
     }
 
     @Override
     public void run() {
         try {
-            t = callable.call();
+            v = callable.call();
             status = KNOWN;
-        } catch (ExecutionException x) {
-            //we called Future::get and the other thread threw an exception
-            //we retrieve that exception
-            
-            this.x = x.getCause();
-            status = DOES_NOT_EXIST;
-        } catch (TimeoutException x) {
-            //the other thread took too long
-            
+        } catch (ExecutionException | TimeoutException x) {
             this.x = x;
             status = DOES_NOT_EXIST;
         } catch (InterruptedException x) {
@@ -48,17 +40,17 @@ final class CalculatingThread<T> extends Thread {
         }
     }
 
-    public T getValue() {
-        return t;
+    public V getValue() {
+        return v;
     }
 
-    public <T> T getException() throws ExecutionException, InterruptedException, TimeoutException {
+    public V throwException() throws ExecutionException, InterruptedException {
         try {
             throw x;
-        } catch (TimeoutException x) {
+        } catch (ExecutionException | InterruptedException x) {
             throw x;
-        } catch (Throwable x) {
-            throw new ExecutionException(x);
+        } catch (Exception x) {
+            throw new AssertionError(x);
         }
     }
 }

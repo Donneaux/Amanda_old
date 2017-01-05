@@ -14,34 +14,24 @@ enum ValueStatus {
      * DO NOT CHANGE THE ORDER.
      */
     KNOWN {
-
-                @Override
-                <R> R get(CalculatingThread<R> thread) throws ExecutionException, InterruptedException, TimeoutException {
-                    return thread.getValue();
-                }
-            },
-    /**
-     *
-     */
+        @Override
+        <R> R get(CalculatingThread<R> thread) throws ExecutionException, InterruptedException, TimeoutException {
+            return thread.getValue();
+        }
+    },
     PENDING {
-
-                @Override
-                <R> R get(CalculatingThread<R> thread) throws ExecutionException, InterruptedException, TimeoutException {
-                    throw new TimeoutException();
-                }
-
-            },
-    /**
-     *
-     */
+        @Override
+        <R> R get(CalculatingThread<R> thread) throws ExecutionException, InterruptedException, TimeoutException {
+            throw new TimeoutException();
+        }
+    },
     DOES_NOT_EXIST {
-
-                @Override
-                <R> R get(CalculatingThread<R> thread) throws ExecutionException, InterruptedException, TimeoutException {
-                    return thread.getException();
-                }
-
-            };
+        @Override
+        <R> R get(CalculatingThread<R> thread) throws ExecutionException, InterruptedException, TimeoutException {
+            thread.throwException();
+            throw new AssertionError();
+        }
+    };
 
     /**
      *

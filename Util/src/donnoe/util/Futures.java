@@ -6,6 +6,7 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.function.Function;
+import static java.lang.Thread.interrupted;
 
 /**
  *
@@ -53,7 +54,7 @@ public class Futures {
             //"By convention, any method that exits by throwing an InterruptedException...
             //clears interrupt status when it does so. However, it's always possible...
             //that interrupt status will immediately be set again, by another thread invoking interrupt."
-            Thread.interrupted();
+            interrupted();
             throw x;
         }
     }

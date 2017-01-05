@@ -11,7 +11,7 @@ public class NameAndTypeConstant extends Constant {
 
     private final Future<UTFConstant> name;
     private final Future<UTFConstant> type;
-    
+
     public NameAndTypeConstant(ClassFile cF) {
         name = cF.readConstantFuture();
         type = cF.readConstantFuture();

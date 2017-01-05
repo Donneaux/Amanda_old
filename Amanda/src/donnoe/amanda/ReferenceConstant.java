@@ -10,6 +10,7 @@ import java.util.concurrent.Future;
 public final class ReferenceConstant extends Constant {
 
     private final Future<ClassConstant> clazz;
+
     public ReferenceConstant(ClassFile cF) {
         clazz = cF.readConstantFuture();
         cF.skip(2);
@@ -20,5 +21,5 @@ public final class ReferenceConstant extends Constant {
         sb.append("reference");
         sb.append(clazz.get());
     }
-    
+
 }
