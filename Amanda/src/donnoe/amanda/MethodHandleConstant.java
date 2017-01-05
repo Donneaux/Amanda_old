@@ -14,6 +14,4 @@ public final class MethodHandleConstant extends Constant {
     public void resolve() {
         sb.append("method handle");
     }
-    
-    
 }

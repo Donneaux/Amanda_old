@@ -16,6 +16,4 @@ public final class ClassConstant extends UTFBasedConstant {
     public void resolve() throws ExecutionException, InterruptedException {
         sb.append(utf.get().toString().replace('/', '.')).append(".class");
     }
-    
-    
 }

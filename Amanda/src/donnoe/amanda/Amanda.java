@@ -1,9 +1,9 @@
 package donnoe.amanda;
 
-import donnoe.util.FutureStatus;
-import donnoe.util.Futures;
 import java.io.*;
 import java.util.concurrent.*;
+import static java.lang.System.*;
+import static java.util.concurrent.Executors.newCachedThreadPool;
 
 /**
  *
@@ -12,19 +12,21 @@ import java.util.concurrent.*;
 public enum Amanda {
     INSTANCE;
 
-    public final ExecutorService exec = Executors.newCachedThreadPool();
+    public final ExecutorService exec = newCachedThreadPool();
 
     private static PrintStream stream;
 
     public static void main(String[] args) {
-        double i = 1 << (1 << 4);
         try {
-            stream = args.length > 1 ? System.err : new PrintStream(new OutputStream() {
-                @Override
-                public void write(int b) throws IOException {
+            stream = args.length > 1 ? err : new PrintStream(
+                new OutputStream() {
+                    @Override
+                    public void write(int b) throws IOException {}
                 }
-            });
-            System.out.println(INSTANCE.queueForResolution(new ClassFile(args[0])).get());
+            );
+            out.println(INSTANCE.queueForResolution(
+                new ClassFile(args[0])
+            ).get());
         } catch (ExecutionException | InterruptedException x) {
             throw new Error(x);
         } finally {
@@ -48,15 +50,14 @@ public enum Amanda {
 
     public <B extends Blob> Future<B> queueForResolution(B b) {
         return exec.submit(
-                () -> {
-                    try {
-                        b.resolve();
-                    } catch (ExecutionException | InterruptedException x) {
-                        throw new IllegalStateException(x);
-                    }
+            () -> {
+                try {
+                    b.resolve();
+                } catch (ExecutionException | InterruptedException x) {
+                    throw new IllegalStateException(x);
                 }
-                , b
+            },
+            b
         );
     }
-
 }

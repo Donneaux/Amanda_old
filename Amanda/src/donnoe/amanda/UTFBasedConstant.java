@@ -19,6 +19,4 @@ public class UTFBasedConstant extends Constant {
     public void resolve() throws ExecutionException, InterruptedException {
         sb.append("single");
     }
-    
-    
 }

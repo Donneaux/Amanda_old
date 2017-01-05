@@ -1,5 +1,4 @@
 package donnoe.amanda;
-
 /**
  *
  * @author joshuadonnoe
@@ -14,6 +13,4 @@ public final class MethodTypeConstant extends Constant {
     public void resolve() {
         sb.append("method type");
     }
-    
-    
 }

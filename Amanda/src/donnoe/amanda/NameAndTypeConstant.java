@@ -21,7 +21,4 @@ public class NameAndTypeConstant extends Constant {
     public void resolve() throws ExecutionException, InterruptedException {
         sb.append(name.get()).append(' ').append(type.get());
     }
-    
-    
-    
 }
