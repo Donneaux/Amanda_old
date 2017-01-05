@@ -3,6 +3,7 @@ package donnoe.util;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
+import static donnoe.util.ValueStatus.*;
 
 /**
  *
@@ -11,26 +12,14 @@ import java.util.concurrent.TimeoutException;
  */
 final class CalculatingThread<T> extends Thread {
 
-    /**
-     *
-     */
     protected T t;
 
-    /**
-     *
-     */
-    protected Throwable x;
+    protected Throwable x;//this is used when we get 
 
-    /**
-     *
-     */
-    protected ValueStatus status = ValueStatus.PENDING;
+    protected ValueStatus status = PENDING;
+
     private final Callable<T> callable;
 
-    /**
-     *
-     * @param c
-     */
     public CalculatingThread(Callable<T> callable) {
         this.callable = callable;
     }
@@ -39,38 +28,30 @@ final class CalculatingThread<T> extends Thread {
     public void run() {
         try {
             t = callable.call();
-            status = ValueStatus.KNOWN;
+            status = KNOWN;
         } catch (ExecutionException x) {
+            //we called Future::get and the other thread threw an exception
+            //we retrieve that exception
+            
             this.x = x.getCause();
-            status = ValueStatus.DOES_NOT_EXIST;
-        } catch (InterruptedException | TimeoutException x) {
-            //following comment from 2016 iteration
-            
-            //this interrupted Exception
-            //...means that there was an error in getting (call threw an exception), so the larger absttaction
-            //...is an ExecutionException caused by x
-            
-            //following comment from 2017 iteration
-            //timeoutexception will happen if something in call timed out
+            status = DOES_NOT_EXIST;
+        } catch (TimeoutException x) {
+            //the other thread took too long
             
             this.x = x;
-            status = ValueStatus.DOES_NOT_EXIST;
+            status = DOES_NOT_EXIST;
+        } catch (InterruptedException x) {
+            //I dont care if this happens. Die silently.
+            //status can be null
         } catch (Exception x) {
+            throw new AssertionError(x);
         }
     }
 
-    /**
-     *
-     * @return
-     */
     public T getValue() {
         return t;
     }
 
-    /**
-     *
-     * @return
-     */
     public <T> T getException() throws ExecutionException, InterruptedException, TimeoutException {
         try {
             throw x;
@@ -80,5 +61,4 @@ final class CalculatingThread<T> extends Thread {
             throw new ExecutionException(x);
         }
     }
-    
 }
