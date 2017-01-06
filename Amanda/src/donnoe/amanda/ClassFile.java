@@ -1,5 +1,6 @@
 package donnoe.amanda;
 
+import donnoe.amanda.constant.TwoWordPrimativeConstant;
 import java.io.*;
 import java.util.Map;
 import java.util.concurrent.*;

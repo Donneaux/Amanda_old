@@ -1,5 +1,6 @@
 package donnoe.amanda;
 
+import donnoe.amanda.constant.ClassConstant;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 

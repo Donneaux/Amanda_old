@@ -1,7 +1,11 @@
 package donnoe.amanda;
 
-import static donnoe.amanda.PrimativeConstant.*;
-import static donnoe.amanda.TwoWordPrimativeConstant.*;
+import donnoe.amanda.constant.StringConstant;
+import donnoe.amanda.constant.UTFConstant;
+import donnoe.amanda.constant.NameAndTypeConstant;
+import donnoe.amanda.constant.ClassConstant;
+import static donnoe.amanda.constant.PrimativeConstant.*;
+import static donnoe.amanda.constant.TwoWordPrimativeConstant.*;
 /**
  *
  * @author joshuadonnoe

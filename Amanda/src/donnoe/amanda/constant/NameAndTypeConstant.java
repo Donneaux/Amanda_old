@@ -1,5 +1,7 @@
-package donnoe.amanda;
+package donnoe.amanda.constant;
 
+import donnoe.amanda.ClassFile;
+import donnoe.amanda.Constant;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
