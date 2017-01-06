@@ -9,12 +9,12 @@ import java.util.concurrent.Future;
  */
 public class NameAndTypeConstant extends Constant {
 
-    private final Future<UTFConstant> name;
-    private final Future<UTFConstant> type;
+    private final Future<String> name;
+    private final Future<String> type;
 
     public NameAndTypeConstant(ClassFile cF) {
-        name = cF.readConstantFuture();
-        type = cF.readConstantFuture();
+        name = cF.readStringFuture();
+        type = cF.readStringFuture();
     }
 
     @Override

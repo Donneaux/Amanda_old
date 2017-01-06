@@ -1,5 +1,7 @@
 package donnoe.amanda;
 
+import static donnoe.amanda.PrimativeConstant.*;
+import static donnoe.amanda.TwoWordPrimativeConstant.*;
 /**
  *
  * @author joshuadonnoe
@@ -12,17 +14,17 @@ public abstract class Constant extends Blob {
             case 0x01:
                 return new UTFConstant(cF);
             case 0x03:
-                return PrimativeConstant.readIntegerConstant(cF);
+                return readIntegerConstant(cF);
             case 0x04:
-                return PrimativeConstant.readFloatConstant(cF);
+                return readFloatConstant(cF);
             case 0x05:
-                return TwoWordPrimativeConstant.readLongConstant(cF);
+                return readLongConstant(cF);
             case 0x06:
-                return TwoWordPrimativeConstant.readDoubleConstant(cF);
+                return readDoubleConstant(cF);
             case 0x07:
                 return new ClassConstant(cF, index);
             case 0x08:
-                return new UTFBasedConstant(cF);
+                return new StringConstant(cF);
             case 0x09:
             case 0x0A:
             case 0x0B:

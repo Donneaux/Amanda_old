@@ -10,16 +10,15 @@ import java.util.concurrent.Future;
 public final class ReferenceConstant extends Constant {
 
     private final Future<ClassConstant> clazz;
+    private final Future<String> nAt;
 
     public ReferenceConstant(ClassFile cF) {
         clazz = cF.readConstantFuture();
-        cF.skip(2);
+        nAt = cF.readStringFuture();
     }
 
     @Override
     public void resolve() throws ExecutionException, InterruptedException {
-        sb.append("reference");
-        sb.append(clazz.get());
+        sb.append(clazz.get()).append(' ').append(nAt.get());
     }
-
 }

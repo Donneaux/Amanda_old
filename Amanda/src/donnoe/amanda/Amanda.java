@@ -4,6 +4,7 @@ import java.io.*;
 import java.util.concurrent.*;
 import static java.lang.System.*;
 import static java.util.concurrent.Executors.newCachedThreadPool;
+import java.util.function.Function;
 
 /**
  *
@@ -16,6 +17,8 @@ public enum Amanda {
 
     private static PrintStream stream;
 
+    private static Function<Object, Object> f = i -> i;
+    
     public static void main(String[] args) {
         try {
             stream = args.length > 1

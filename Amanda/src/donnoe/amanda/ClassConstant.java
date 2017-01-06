@@ -15,6 +15,7 @@ public final class ClassConstant extends UTFBasedConstant {
 
     @Override
     public void resolve() throws ExecutionException, InterruptedException {
-        sb.append(utf.get().toString().replace('/', '.')).append(".class");
+        //if starts with '[' then get type
+        sb.append(utf.get().replace('/', '.')).append(".class");
     }
 }

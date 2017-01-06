@@ -6,7 +6,12 @@ import java.util.concurrent.*;
 import java.util.stream.*;
 import static donnoe.amanda.Amanda.INSTANCE;
 import static donnoe.util.Functions.ExceptionalFunction;
-import donnoe.util.Futures;
+import static donnoe.util.Futures.*;
+import donnoe.util.LookupMap;
+import java.util.HashMap;
+import static donnoe.util.LookupMap.unmodifiable;
+import static java.lang.String.*;
+import static java.util.stream.Collectors.*;
 
 /**
  *
@@ -26,7 +31,9 @@ public final class ClassFile extends Blob {
 
     private DataInputStream in;
 
-    private Map<Integer, Future<Constant>> constantsMap;
+    private Map<Integer, Future<Constant>> constantFutures;
+
+    private Map<Integer, Future<String>> stringFutures;
 
     public String readUTF() {
         return read(dis -> dis.readUTF());
@@ -69,42 +76,73 @@ public final class ClassFile extends Blob {
     }
 
     private void readConstants() {
-        Map<Integer, BlockingQueue<Future<Constant>>> qs = IntStream.range(1, readUnsignedShort()).boxed().collect(Collectors.toMap(i -> i, i -> new ArrayBlockingQueue<>(1)));
-        constantsMap = qs.entrySet().stream().collect(Collectors.toMap(
+        Map<Integer, BlockingQueue<Future<Constant>>> qs = IntStream.range(1, readUnsignedShort()).boxed().collect(toMap(i -> i, i -> new ArrayBlockingQueue<>(1)));
+        constantFutures = qs.entrySet().stream().collect(toMap(
                 Map.Entry::getKey,
                 e -> Amanda.INSTANCE.exec.submit(() -> e.getValue().take().get())
         ));
+        stringFutures = new LookupMap<>(i -> transform(getConstantFuture(i), Object::toString));
         qs.forEach((index, q) -> {
-            if (!constantsMap.containsKey(index)) {
+            if (!constantFutures.containsKey(index)) {
                 return;
             }
             final Constant constant = Constant.readConstant(this, index);
             if (constant instanceof TwoWordPrimativeConstant) {
-                constantsMap.remove(index + 1).cancel(true);
+                constantFutures.remove(index + 1).cancel(true);
             }
             q.add(INSTANCE.queueForResolution(constant));
         });
     }
 
     public <C extends Constant> Future<C> readConstantFuture() {
-        return Futures.cast(constantsMap.get(readUnsignedShort()));
+        return getConstantFuture(readUnsignedShort());
     }
 
+    public <C extends Constant> Future<C> getConstantFuture(int index) {
+        return cast(constantFutures.get(index));
+    }
+    
     public Future<String> readStringFuture() {
-        return Futures.transform(readConstantFuture(), Object::toString);
+        return stringFutures.get(readUnsignedShort());
     }
-
+    
     @Override
     public void resolve() throws ExecutionException, InterruptedException {
-        constantsMap.forEach(
+        constantFutures.forEach(
                 (i, f) -> sb.append(
                         String.format(
                                 "%d = %s%n",
                                 i,
-                                Futures.getNow(f)
-                        ))
+                                getNow(f)
+                        )
+                )
         );
-        sb.append(constantsMap.size());
+        sb.append(constantFutures.size());
     }
+    
+    public static final Map<Character, String> ESCAPE_CHARACTERS;
 
+    static {
+        final Map<Character, String> escapeCharacter = new HashMap<>();
+        escapeCharacter.put('\b', "\\b");
+        escapeCharacter.put('\f', "\\f");
+        escapeCharacter.put('\n', "\\n");
+        escapeCharacter.put('\r', "\\r");
+        escapeCharacter.put('\t', "\\t");
+        escapeCharacter.put('\"', "\\\"");
+        escapeCharacter.put('\'', "\\\'");
+        escapeCharacter.put('\\', "\\\\");
+        ESCAPE_CHARACTERS = unmodifiable(
+                escapeCharacter,
+                c -> c < 0x20 || c > 0x7e ? format("\\u%04x", (int) c) : valueOf(c)
+        );
+    }
+    
+    public static String escapeCharacter(final char c) {
+        return ESCAPE_CHARACTERS.get(c);
+    }
+    
+    public static String escapeString(final String s) {
+        return s.chars().mapToObj(i -> escapeCharacter((char) i)).collect(joining("", "\"", "\""));
+    }
 }

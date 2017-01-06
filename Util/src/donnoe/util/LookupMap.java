@@ -32,4 +32,8 @@ public class LookupMap<K, V> extends ForwardingMap<K, V> {
         K k = (K) o;
         return containsKey(k) ? delegate.get(o) : delegate.computeIfAbsent(k, function);
     }
+    
+    public static <K, V> Map<K, V> unmodifiable(Map<K, V> delegate, Function<K, V> function) {
+        return unmodifiableMap(new LookupMap<>(delegate, function));
+    }
 }
