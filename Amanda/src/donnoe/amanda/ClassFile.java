@@ -6,12 +6,13 @@ import java.util.Map;
 import java.util.concurrent.*;
 import java.util.stream.*;
 import static donnoe.amanda.Amanda.INSTANCE;
+import donnoe.amanda.constant.Constant;
 import static donnoe.util.Functions.ExceptionalFunction;
 import static donnoe.util.Futures.*;
 import donnoe.util.LookupMap;
-import java.util.HashMap;
-import static donnoe.util.LookupMap.unmodifiable;
 import static java.lang.String.*;
+import java.util.Collections;
+import java.util.List;
 import static java.util.stream.Collectors.*;
 
 /**
@@ -83,11 +84,13 @@ public final class ClassFile extends Blob {
                 e -> Amanda.INSTANCE.exec.submit(() -> e.getValue().take().get())
         ));
         stringFutures = new LookupMap<>(i -> transform(getConstantFuture(i), Object::toString));
+        
+        //anything that might be read by the constants has to exist at this point
         qs.forEach((index, q) -> {
             if (!constantFutures.containsKey(index)) {
                 return;
             }
-            final Constant constant = Constant.readConstant(this, index);
+            Constant constant = Constant.readConstant(this, index);
             if (constant instanceof TwoWordPrimativeConstant) {
                 constantFutures.remove(index + 1).cancel(true);
             }
@@ -121,29 +124,46 @@ public final class ClassFile extends Blob {
         sb.append(constantFutures.size());
     }
     
-    public static final Map<Character, String> ESCAPE_CHARACTERS;
+    public static final Map<Character, String> ESCAPE_CHARACTERS = Collections.unmodifiableMap(
+            new LookupMap<Character, String>(c -> c < 0x20 || c > 0x7e ? format("\\u%04x", (int) c) : valueOf(c)) {
+                {
+                    put('\b', "\\b");
+                    put('\f', "\\f");
+                    put('\n', "\\n");
+                    put('\r', "\\r");
+                    put('\t', "\\t");
+                    put('\"', "\\\"");
+                    put('\'', "\\\'");
+                    put('\\', "\\\\");
+                }
+            }
+    );
 
-    static {
-        final Map<Character, String> escapeCharacter = new HashMap<>();
-        escapeCharacter.put('\b', "\\b");
-        escapeCharacter.put('\f', "\\f");
-        escapeCharacter.put('\n', "\\n");
-        escapeCharacter.put('\r', "\\r");
-        escapeCharacter.put('\t', "\\t");
-        escapeCharacter.put('\"', "\\\"");
-        escapeCharacter.put('\'', "\\\'");
-        escapeCharacter.put('\\', "\\\\");
-        ESCAPE_CHARACTERS = unmodifiable(
-                escapeCharacter,
-                c -> c < 0x20 || c > 0x7e ? format("\\u%04x", (int) c) : valueOf(c)
-        );
-    }
-    
     public static String escapeCharacter(final char c) {
         return ESCAPE_CHARACTERS.get(c);
     }
     
     public static String escapeString(final String s) {
         return s.chars().mapToObj(i -> escapeCharacter((char) i)).collect(joining("", "\"", "\""));
+    }
+    
+    
+    
+    public static List<String> getTypes(String s) {
+        if (s.isEmpty()) {
+            return Collections.EMPTY_LIST;
+        }
+        switch (s.charAt(0)) {
+            case '(':
+                return getTypes(s.substring(1));
+            case '[':
+                List<String> types = getTypes(s.substring(1));
+                
+                types.add(0, "ARRAY");
+                return types;
+            default:
+                return Collections.EMPTY_LIST;
+        }
+        
     }
 }

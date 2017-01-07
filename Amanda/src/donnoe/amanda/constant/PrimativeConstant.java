@@ -1,7 +1,7 @@
 package donnoe.amanda.constant;
 
 import donnoe.amanda.ClassFile;
-import donnoe.amanda.Constant;
+import donnoe.amanda.constant.Constant;
 import static java.lang.String.*;
 import static java.lang.Double.*;
 

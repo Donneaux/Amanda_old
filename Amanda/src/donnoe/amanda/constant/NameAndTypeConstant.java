@@ -1,7 +1,6 @@
 package donnoe.amanda.constant;
 
 import donnoe.amanda.ClassFile;
-import donnoe.amanda.Constant;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
@@ -21,6 +20,8 @@ public class NameAndTypeConstant extends Constant {
 
     @Override
     public void resolve() throws ExecutionException, InterruptedException {
+        System.err.print(type.get());
+        System.err.println(ClassFile.getTypes(type.get()));
         sb.append(name.get()).append(' ').append(type.get());
     }
 }

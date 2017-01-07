@@ -49,9 +49,9 @@ public enum FutureStatus {
 //unsupported   Thrown to indicate that the requested operation is not supported.
 //argument      Thrown to indicate that a method has been passed an illegal or inappropriate argument.    
 //state         Signals that a method has been invoked at an illegal or inappropriate time. In other words, the Java environment or Java application is not in an appropriate state for the requested operation.
-//unsupported   "i can't do that"
-//argument      "i can't do that to these arguments"
-//state         "i can't do that now"    
+//unsupported   "i can't do that" N/A
+//argument      "i can't do that to these arguments" the Future has not value
+//state         "i can't do that now"    the future is not done
     public static <V> V getNow(Future<V> f) {
         return getFutureStatus(f).getNowHelper(f);
     }

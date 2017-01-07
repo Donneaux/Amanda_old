@@ -33,8 +33,8 @@ final class CalculatingThread<V> extends Thread {
             this.x = x;
             status = DOES_NOT_EXIST;
         } catch (InterruptedException x) {
-            //I dont care if this happens. Die silently.
-            //status can be null
+            //silent death is correct behavior
+            //calculateWithin has already thrown an interruptedException
         } catch (Exception x) {
             throw new AssertionError(x);
         }

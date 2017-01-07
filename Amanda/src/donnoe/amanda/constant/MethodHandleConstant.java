@@ -1,10 +1,12 @@
-package donnoe.amanda;
+package donnoe.amanda.constant;
 
+import donnoe.amanda.ClassFile;
 import java.util.Map;
 import static java.util.stream.Stream.*;
 import static java.util.stream.Collectors.*;
 import static java.util.function.Function.identity;
 import static java.util.Collections.unmodifiableMap;
+import java.util.HashMap;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
@@ -13,19 +15,18 @@ import java.util.concurrent.Future;
  */
 public final class MethodHandleConstant extends Constant {
 
-    private static final Map<Integer, String> KINDS;
-    
-    static {
-        Map<Integer, String> kinds = of(5, 9).collect(toMap(identity(), i -> "Virtual"));
-        kinds.put(1, "Getter");
-        kinds.put(2, "StaticGetter");
-        kinds.put(3, "Setter");
-        kinds.put(4, "StaticSetter");
-        kinds.put(6, "Static");
-        kinds.put(7, "Special");
-        kinds.put(8, "Constructor");
-        KINDS = unmodifiableMap(kinds);
-    }
+    private static final Map<Integer, String> KINDS = unmodifiableMap(new HashMap<Integer, String>(){
+        {
+            putAll(of(5, 9).collect(toMap(identity(), i -> "Virtual")));
+            put(1, "Getter");
+            put(2, "StaticGetter");
+            put(3, "Setter");
+            put(4, "StaticSetter");
+            put(6, "Static");
+            put(7, "Special");
+            put(8, "Constructor");
+        }
+    });
     
     private final Future<String> method;
     

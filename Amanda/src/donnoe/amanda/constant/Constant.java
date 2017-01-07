@@ -1,9 +1,7 @@
-package donnoe.amanda;
+package donnoe.amanda.constant;
 
-import donnoe.amanda.constant.StringConstant;
-import donnoe.amanda.constant.UTFConstant;
-import donnoe.amanda.constant.NameAndTypeConstant;
-import donnoe.amanda.constant.ClassConstant;
+import donnoe.amanda.Blob;
+import donnoe.amanda.ClassFile;
 import static donnoe.amanda.constant.PrimativeConstant.*;
 import static donnoe.amanda.constant.TwoWordPrimativeConstant.*;
 /**
