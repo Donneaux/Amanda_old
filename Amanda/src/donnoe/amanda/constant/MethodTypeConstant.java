@@ -2,6 +2,8 @@ package donnoe.amanda.constant;
 
 import donnoe.amanda.ClassFile;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 import static java.util.stream.Collectors.joining;
 
 /**
@@ -10,13 +12,15 @@ import static java.util.stream.Collectors.joining;
  */
 public final class MethodTypeConstant extends Constant {
 
+    private final Future<List<String>> typesFuture;
+    
     public MethodTypeConstant(ClassFile cF) {
-        cF.skip(2);//this thing needs to take a utf and parse to types
+        typesFuture = cF.readTypesFuture();
     }
 
     @Override
-    public void resolve() {
-        sb.append("method type");
+    public void resolve() throws ExecutionException, InterruptedException {
+        sb.append(asLiteral(typesFuture.get()));
     }
     
     public static String asLiteral(List<String> types) {

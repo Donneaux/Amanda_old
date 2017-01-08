@@ -10,12 +10,12 @@ import java.util.concurrent.Future;
  */
 public final class ReferenceConstant extends Constant {
 
-    private final Future<ClassConstant> clazz;
-    private final Future<String> nAt;
+    public final Future<String> clazz;
+    public final Future<NameAndTypeConstant> nAt;
 
     public ReferenceConstant(ClassFile cF) {
-        clazz = cF.readConstantFuture();
-        nAt = cF.readStringFuture();
+        clazz = cF.readShortStringFuture();
+        nAt = cF.readConstantFuture();
     }
 
     @Override

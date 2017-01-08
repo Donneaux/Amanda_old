@@ -28,15 +28,17 @@ public final class MethodHandleConstant extends Constant {
         }
     });
     
-    private final Future<String> method;
+    private final Future<ReferenceConstant> method;
     
     public MethodHandleConstant(ClassFile cF) {
         sb.append("java.lang.invoke.MethodHandles.lookup().find").append(KINDS.get(cF.readUnsignedByte())).append("(\n");
-        method = cF.readStringFuture();
+        method = cF.readConstantFuture();
     }
 
     @Override
     public void resolve() throws ExecutionException, InterruptedException {
-        sb.append(method.get());
+        sb.append(method.get().clazz.get()).append(".class,\n");
+        sb.append('"').append(method.get().nAt.get().name.get()).append("\",\n");
+        sb.append(MethodTypeConstant.asLiteral(method.get().nAt.get().types.get())).append(",\n)");
     }
 }
