@@ -3,7 +3,6 @@ package donnoe.util;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
-import static java.util.Collections.unmodifiableMap;
 
 /**
  * looks for the key in the map and if the key is not there, computes the value
