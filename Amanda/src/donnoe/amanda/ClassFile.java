@@ -144,9 +144,9 @@ public final class ClassFile extends Accessible {
         return range(0, objectCount).mapToObj(i -> f.apply(this)).collect(c);
     }
     
-    public Future<List<String>> readShortStringListFuture() {
-        return readObjects(ClassFile::readShortStringFuture, toListFuture());
-    }
+//    public Future<List<String>> readShortStringListFuture() {
+//        return readObjects(ClassFile::readShortStringFuture, toListFuture());
+//    }
 //</editor-fold>
     
     //<editor-fold desc="statics">
