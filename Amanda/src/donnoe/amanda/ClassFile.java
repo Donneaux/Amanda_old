@@ -144,9 +144,6 @@ public final class ClassFile extends Accessible {
         return range(0, objectCount).mapToObj(i -> f.apply(this)).collect(c);
     }
     
-//    public Future<List<String>> readShortStringListFuture() {
-//        return readObjects(ClassFile::readShortStringFuture, toListFuture());
-//    }
 //</editor-fold>
     
     //<editor-fold desc="statics">
@@ -185,11 +182,11 @@ public final class ClassFile extends Accessible {
         put('<', ClassFile::getFormalTypeParameters);
     }});
     
-    public static String escapeCharacter(final char c) {
+    public static String escapeCharacter(char c) {
         return ESCAPE_CHARACTERS.get(c);
     }
     
-    public static String escapeString(final String s) {
+    public static String escapeString(String s) {
         return s.chars().mapToObj(i -> escapeCharacter((char) i)).collect(joining("", "\"", "\""));
     }
     
