@@ -8,7 +8,7 @@ import java.util.concurrent.Future;
  */
 abstract class ForwardingFuture<V> implements Future<V> {
 
-    private final Future<?> f;
+    protected volatile Future<?> f;
 
     /**
      *
