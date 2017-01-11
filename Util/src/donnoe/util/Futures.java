@@ -7,6 +7,9 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.function.Function;
 import static java.lang.Thread.interrupted;
+import java.util.Map;
+import java.util.concurrent.CancellationException;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  *
@@ -24,6 +27,82 @@ public class Futures {
         (Future<V>) f;
         return rv;
     }
+    
+    private static final Future<?> FUTURE_OF_NULL = new FutureOf<>(null);
+
+    private static final Map<Object, Future<?>> FUTURES = new ConcurrentHashMap<>();
+
+    /**
+     *
+     * @param <T>
+     * @param t
+     * @return
+     */
+    public static <T> Future<T> of(T t) {
+        return cast(t == null ? FUTURE_OF_NULL : FUTURES.computeIfAbsent(t, FutureOf::new));
+    }
+
+    private static final Future<?> CANCELLED = new Future<Object>() {
+
+        @Override
+        public Object get() throws InterruptedException, ExecutionException {
+            throw new CancellationException();
+        }
+
+        @Override
+        public Object get(long timeout, TimeUnit unit) throws InterruptedException, ExecutionException, TimeoutException {
+            throw new CancellationException();
+        }
+
+        @Override
+        public boolean isCancelled() {
+            return true;
+        }
+
+        @Override
+        public boolean isDone() {
+            return true;
+        }
+
+        @Override
+        public boolean cancel(boolean mayInterruptIfRunning) {
+            return false;
+        }
+    };
+    
+    public static <T> Future<T> cancelled() {
+        return cast(CANCELLED);
+    }
+    
+    public static <T> Future<T> throwing(Throwable t) {
+        return new Future<T>() {
+
+            @Override
+            public boolean cancel(boolean mayInterruptIfRunning) {
+                return false;
+            }
+
+            @Override
+            public boolean isCancelled() {
+                return false;
+            }
+
+            @Override
+            public boolean isDone() {
+                return true;
+            }
+
+            @Override
+            public T get() throws InterruptedException, ExecutionException {
+                throw new ExecutionException(t);
+            }
+
+            @Override
+            public T get(long timeout, TimeUnit unit) throws InterruptedException, ExecutionException, TimeoutException {
+                throw new ExecutionException(t);
+            }
+        };
+    }    
     
     public static <T, R> Future<R> transform(Future<T> future, Function<T, R> function) {
         return new ForwardingFuture<R>(future) {
