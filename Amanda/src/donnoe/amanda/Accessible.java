@@ -11,7 +11,7 @@ public abstract class Accessible extends Blob {
     protected int access;
     
     
-    protected void readAttributes(ClassFile cF) {
+    protected void readAttributes() {
         cF.readObjects(cf -> {
             cf.skip(2);
             cf.skip(cf.readInt());
