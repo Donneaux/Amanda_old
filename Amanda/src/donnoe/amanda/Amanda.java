@@ -21,18 +21,28 @@ public enum Amanda {
     
     public static void main(String[] args) {
         try {
-            stream = args.length > 1
+            INSTANCE.setStream(args.length > 1);
+            out.println(INSTANCE.decompile(args[0]));
+        } finally {
+            INSTANCE.exec.shutdownNow();
+        }
+    }
+    
+    public void setStream(boolean verbose) {
+            stream = verbose
                 ? err
                 : new PrintStream(new OutputStream() {
                     @Override
                     public void write(int b) throws IOException {
                     }
                 });
-            out.println(INSTANCE.queueForResolution(new ClassFile(args[0])).get());
+    }
+    
+    public String decompile(String clazz) {
+        try {
+            return queueForResolution(new ClassFile(clazz)).get().toString();
         } catch (ExecutionException | InterruptedException x) {
-            throw new Error(x);
-        } finally {
-            INSTANCE.exec.shutdownNow();
+            throw new IllegalStateException("Compilation failed");
         }
     }
 
