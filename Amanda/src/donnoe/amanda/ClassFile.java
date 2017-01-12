@@ -16,6 +16,7 @@ import java.util.Queue;
 import java.util.function.BiFunction;
 import static java.util.stream.Collectors.*;
 import static donnoe.amanda.constant.Constant.readConstant;
+import donnoe.util.Futures;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import static java.util.Collections.unmodifiableMap;
@@ -24,7 +25,6 @@ import java.util.function.Function;
 import static java.util.function.Function.identity;
 import static java.util.stream.Stream.of;
 import static java.util.stream.IntStream.range;
-
 /**
  *
  * @author joshuadonnoe
@@ -42,6 +42,10 @@ public final class ClassFile extends Accessible {
         access = readUnsignedShort();
         int thisClass = readUnsignedShort();
         int superClass = readUnsignedShort();
+        Future<List<String>> interfaces = readShortStringsListFuture();
+        readObjects(Member::new, toList());
+        readObjects(Member::new, toList());
+        readAttributes(this);
     }
 
     private void readConstants() {
@@ -136,6 +140,10 @@ public final class ClassFile extends Accessible {
         return shortStringFutures.get(readUnsignedShort());
     }
     
+    public Future<List<String>> readShortStringsListFuture() {
+        return readObjects(ClassFile::readShortStringFuture, toListFuture());
+    }
+    
     public <O, T> T readObjects(Function<ClassFile, O> f, Collector<O, ?, T> c) {
         return readObjects(f, c, readUnsignedShort());
     }
@@ -143,6 +151,11 @@ public final class ClassFile extends Accessible {
     public <O, T> T readObjects(Function<ClassFile, O> f, Collector<O, ?, T> c, int objectCount) {
         return range(0, objectCount).mapToObj(i -> f.apply(this)).collect(c);
     }
+    
+    public <B extends Blob> Future<List<B>> readItemFutureList(Function<ClassFile, B> f, int elementCount) {
+        return readObjects(f.andThen(INSTANCE::queueForResolution), collectingAndThen(toList(), Futures::transformList), elementCount);
+    }
+    
     
 //</editor-fold>
     
