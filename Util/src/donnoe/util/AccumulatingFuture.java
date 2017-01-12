@@ -4,7 +4,6 @@ import static donnoe.util.ValueStatus.KNOWN;
 import static donnoe.util.ValueStatus.PENDING;
 import static java.lang.System.currentTimeMillis;
 import static java.util.Comparator.naturalOrder;
-import java.util.concurrent.Callable;
 import java.util.concurrent.CompletionException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
@@ -16,6 +15,7 @@ import java.util.function.Supplier;
 import java.util.stream.Collector;
 import static java.util.stream.Collectors.reducing;
 import java.util.stream.Stream;
+import static java.util.function.Function.identity;
 
 /**
  *
@@ -36,7 +36,7 @@ final class AccumulatingFuture<T, TT, R> implements Future<R> {
      * @return
      */
     public static <TT, R> AccumulatingFuture<Future<TT>, TT, R> ofLeafFutures(Supplier<Stream<Future<TT>>> streamSupplier, Collector<TT, ?, R> collector) {
-        return new AccumulatingFuture<>(streamSupplier, t -> t, collector);
+        return new AccumulatingFuture<>(streamSupplier, identity(), collector);
     }
 
     private final Supplier<Stream<T>> streamSupplier;
@@ -59,8 +59,8 @@ final class AccumulatingFuture<T, TT, R> implements Future<R> {
      *
      * @param streamSupplier    a stream of objects
      * @param flatMap           turns an object into a stream of futures that it depends on
-     * @param map               turns an object into another object (probably using the futures from flat)
-     * @param collector         accumulates the second objects into a single object
+     * @param map               turns an object into a future (probably using the futures from flat)
+     * @param collector         accumulates the futures' objects into a single object
      */
     public AccumulatingFuture(Supplier<Stream<T>> streamSupplier, Function<T, Stream<Future<?>>> flatMap, Function<T, Future<TT>> map, Collector<TT, ?, R> collector) {
         this.streamSupplier = streamSupplier;

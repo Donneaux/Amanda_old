@@ -7,14 +7,15 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.function.Function;
 import static java.lang.Thread.interrupted;
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.ConcurrentHashMap;
+import static java.util.stream.Collectors.*;
+import static donnoe.util.AccumulatingFuture.ofLeafFutures;
+import java.util.stream.Collector;
 
-/**
- *
- * @author joshuadonnoe
- */
 public class Futures {
     private Futures() {}
     
@@ -32,12 +33,6 @@ public class Futures {
 
     private static final Map<Object, Future<?>> FUTURES = new ConcurrentHashMap<>();
 
-    /**
-     *
-     * @param <T>
-     * @param t
-     * @return
-     */
     public static <T> Future<T> of(T t) {
         return cast(t == null ? FUTURE_OF_NULL : FUTURES.computeIfAbsent(t, FutureOf::new));
     }
@@ -144,5 +139,25 @@ public class Futures {
         } catch (TimeoutException x) {
             throw new AssertionError();
         }
+    }
+    
+    public static <T> Future<T> help(Future<T> future) {
+        return new UnwrappingFuture<>(Futures.of(future));
+    }
+    
+    public static <T> Future<List<T>> transformList(List<Future<T>> list) {
+        return help(
+                ofLeafFutures(
+                        list::stream,
+                        collectingAndThen(
+                                toList(),
+                                Collections::unmodifiableList
+                        )
+                )
+        );
+    }
+    
+    public static <T> Collector<Future<T>, ?, Future<List<T>>> toListFuture() {
+        return collectingAndThen(toList(), Futures::transformList);
     }
 }
