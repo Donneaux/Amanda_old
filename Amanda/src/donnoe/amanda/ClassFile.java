@@ -32,6 +32,8 @@ import static java.util.stream.IntStream.range;
 public final class ClassFile extends Accessible {
 
     public ClassFile(String fileName) {
+        super(null);
+        this.cF = this;
         try {
             in = new DataInputStream(new FileInputStream(fileName));
         } catch (IOException x) {
@@ -82,7 +84,7 @@ public final class ClassFile extends Accessible {
     //</editor-fold>
     
     //<editor-fold desc="input reading">
-    private DataInputStream in;
+    public DataInputStream in;
 
     public String readUTF() {
         return read(dis -> dis.readUTF());
@@ -116,11 +118,13 @@ public final class ClassFile extends Accessible {
         return read(dis -> dis.skipBytes(n));
     }
     
-    private <T> T read(ExceptionalFunction<DataInputStream, T, IOException> f) {
+    private <T> T read(ExceptionalFunction<DataInputStream, T> f) {
         try {
             return f.apply(in);
         } catch (IOException x) {
             throw new IOError(x);
+        } catch (Exception x) {
+            throw new AssertionError();
         }
     }
     

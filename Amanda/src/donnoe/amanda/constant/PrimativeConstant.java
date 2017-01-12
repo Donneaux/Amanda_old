@@ -11,12 +11,13 @@ import static java.lang.Double.*;
  */
 public class PrimativeConstant extends Constant {
 
-    protected PrimativeConstant(String s) {
+    protected PrimativeConstant(ClassFile cF, String s) {
+        super(cF);
         sb.append(s);
     }
 
     public static PrimativeConstant readIntegerConstant(ClassFile cF) {
-        return new PrimativeConstant(String.format("%d", cF.readInt()));
+        return new PrimativeConstant(cF, String.format("%d", cF.readInt()));
     }
 
     public static String getLiteral(double value, String type, char suffix) {
@@ -27,7 +28,7 @@ public class PrimativeConstant extends Constant {
 
     public static PrimativeConstant readFloatConstant(ClassFile cF) {
         float f = cF.readFloat();
-        return new PrimativeConstant(Float.isInfinite(f) ? (format("Float.%sTIVE_INFINITY", f > 0 ? "POSI" : "NEGA")) : (isNaN(f) ? "Float.Nan" : format("%ff", f)));
+        return new PrimativeConstant(cF, Float.isInfinite(f) ? (format("Float.%sTIVE_INFINITY", f > 0 ? "POSI" : "NEGA")) : (isNaN(f) ? "Float.Nan" : format("%ff", f)));
     }
 
     @Override

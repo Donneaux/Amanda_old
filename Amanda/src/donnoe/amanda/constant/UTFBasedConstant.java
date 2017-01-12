@@ -12,6 +12,7 @@ public abstract class UTFBasedConstant extends Constant {
     protected final Future<String> utf;
 
     public UTFBasedConstant(ClassFile cF) {
+        super(cF);
         utf = cF.readStringFuture();
     }
 }

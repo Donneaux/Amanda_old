@@ -31,6 +31,7 @@ public final class MethodHandleConstant extends Constant {
     private final Future<ReferenceConstant> method;
     
     public MethodHandleConstant(ClassFile cF) {
+        super(cF);
         sb.append("java.lang.invoke.MethodHandles.lookup().find").append(KINDS.get(cF.readUnsignedByte())).append("(\n");
         method = cF.readConstantFuture();
     }

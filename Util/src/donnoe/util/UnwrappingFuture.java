@@ -78,7 +78,9 @@ public class UnwrappingFuture<T> extends ForwardingFuture<T> {
             } catch (Exception x) {
                 throw new AssertionError(x);
             }
-            return (T) UnwrappingFuture.this.f.get();
+            @SuppressWarnings("unchecked")
+            T t = (T) UnwrappingFuture.this.f.get();
+            return t;
         }
 
         @Override
@@ -184,12 +186,16 @@ public class UnwrappingFuture<T> extends ForwardingFuture<T> {
 
     @Override
     public T get() throws InterruptedException, ExecutionException {
-        return (T) f.get();
+        @SuppressWarnings("unchecked")
+        T t = (T) f.get();
+        return t;
     }
 
     @Override
     public T get(long timeout, TimeUnit unit) throws InterruptedException, ExecutionException, TimeoutException {
-        return (T) f.get(timeout, unit);
+        @SuppressWarnings("unchecked")
+        T t = (T) f.get(timeout, unit);
+        return t;
     }
 
 }

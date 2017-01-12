@@ -14,6 +14,7 @@ public final class ReferenceConstant extends Constant {
     public final Future<NameAndTypeConstant> nAt;
 
     public ReferenceConstant(ClassFile cF) {
+        super(cF);
         clazz = cF.readShortStringFuture();
         nAt = cF.readConstantFuture();
     }

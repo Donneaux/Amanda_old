@@ -10,6 +10,10 @@ import static donnoe.amanda.constant.TwoWordPrimativeConstant.*;
  */
 public abstract class Constant extends Blob {
 
+    protected Constant(ClassFile cF) {
+        super(cF);
+    }
+    
     public static Constant readConstant(ClassFile cF, int index) {
         int b = cF.readUnsignedByte();
         switch (b) {

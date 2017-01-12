@@ -13,6 +13,7 @@ public final class InvokeDynamicConstant extends Constant {
     private final Future<NameAndTypeConstant> nAt;
     
     public InvokeDynamicConstant(ClassFile cF) {
+        super(cF);
         cF.skip(2);
         nAt = cF.readConstantFuture();
     }

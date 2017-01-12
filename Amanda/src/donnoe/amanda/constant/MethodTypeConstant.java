@@ -15,6 +15,7 @@ public final class MethodTypeConstant extends Constant {
     private final Future<List<String>> typesFuture;
     
     public MethodTypeConstant(ClassFile cF) {
+        super(cF);
         typesFuture = cF.readTypesFuture();
     }
 

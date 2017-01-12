@@ -9,6 +9,7 @@ import donnoe.amanda.ClassFile;
 public final class UTFConstant extends Constant {
 
     public UTFConstant(ClassFile cF) {
+        super(cF);
         sb.append(cF.readUTF());
     }
 

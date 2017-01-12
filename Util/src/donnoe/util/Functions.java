@@ -9,8 +9,8 @@ public class Functions {
     private Functions() {
     }
 
-    public interface ExceptionalFunction<T, R, X extends Throwable> {
+    public interface ExceptionalFunction<T, R> {
 
-        R apply(T t) throws X;
+        R apply(T t) throws Exception;
     }
 }

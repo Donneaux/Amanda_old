@@ -78,9 +78,8 @@ public class ClassFileTest {
         assertEquals(Arrays.asList("void", "java.lang.String", "int"), instance.getTypes("(Ljava/lang/String;I)V"));
         assertEquals(Arrays.asList("java.util.concurrent.ExecutorService"), instance.getTypes("Ljava/util/concurrent/ExecutorService;"));
         assertEquals(Arrays.asList("java.io.PrintStream"), instance.getTypes("Ljava/io/PrintStream;"));
-/*        
-Ljava/io/PrintStream;
-()V
+        assertEquals(Arrays.asList("void"), instance.getTypes("()V"));
+/*
 (Ljava/lang/String;)Ljava/lang/String;
 Ldonnoe/amanda/Amanda;
 (Ldonnoe/amanda/Blob;)Ljava/util/concurrent/Future;

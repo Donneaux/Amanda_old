@@ -15,6 +15,7 @@ public class NameAndTypeConstant extends Constant {
     public final Future<List<String>> types;
 
     public NameAndTypeConstant(ClassFile cF) {
+        super(cF);
         name = cF.readStringFuture();
         types = cF.readTypesFuture();
     }
