@@ -75,7 +75,6 @@ public final class ClassFile extends Accessible {
     protected Map<Integer, Future<String>> stringFutures;
     
     protected Map<Integer, String> strings;
-    
     protected Map<Integer, Future<List<String>>> typesFutures;
     protected Map<Integer, Future<String>> shortStringFutures;
     //</editor-fold>
