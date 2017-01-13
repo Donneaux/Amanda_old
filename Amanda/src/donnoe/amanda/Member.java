@@ -15,7 +15,7 @@ public class Member extends Accessible {
     public Member(ClassFile cF) {
         super(cF);
         access = cF.readUnsignedShort();
-        Future<String> name = cF.readStringFuture();
+        String name = cF.readString();
         Future<List<String>> types = cF.readTypesFuture();
         readAttributes();
     }

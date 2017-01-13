@@ -7,7 +7,6 @@ import java.util.concurrent.*;
 import java.util.stream.*;
 import static donnoe.amanda.Amanda.INSTANCE;
 import donnoe.amanda.constant.Constant;
-import static donnoe.util.Functions.ExceptionalFunction;
 import static donnoe.util.Futures.*;
 import donnoe.util.LookupMap;
 import static java.lang.String.*;
@@ -16,10 +15,12 @@ import java.util.Queue;
 import java.util.function.BiFunction;
 import static java.util.stream.Collectors.*;
 import static donnoe.amanda.constant.Constant.readConstant;
+import donnoe.util.Futures;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import static java.util.Collections.unmodifiableMap;
 import java.util.List;
+import static donnoe.util.Futures.*;
 import static java.util.function.Function.identity;
 import static java.util.stream.Stream.of;
 /**
@@ -37,24 +38,14 @@ public final class ClassFile extends Accessible {
             throw new IOError(x);
         }
         INSTANCE.println(String.format("0x%X%n%3$s.%s", readInt(), readUnsignedShort(), readUnsignedShort()));
-        readConstants();
-        access = readUnsignedShort();
-        int thisClass = readUnsignedShort();
-        int superClass = readUnsignedShort();
-        Future<List<String>> interfaces = readShortStringsListFuture();
-        readObjects(Member::new, toList());
-        readObjects(Member::new, toList());
-        readAttributes();
-    }
-
-    private void readConstants() {
         Map<Integer, BlockingQueue<Future<Constant>>> qs = IntStream.range(1, readUnsignedShort()).boxed().collect(toMap(i -> i, i -> new ArrayBlockingQueue<>(1)));
         constantFutures = qs.entrySet().stream().collect(toMap(
                 Map.Entry::getKey,
                 e -> Amanda.INSTANCE.exec.submit(() -> e.getValue().take().get())
         ));
         stringFutures = new LookupMap<>(i -> transform(constantFutures.get(i), Object::toString));
-        typesFutures = new LookupMap<>(i -> transform(stringFutures.get(i), s -> getTypes(s)));
+        strings = new LookupMap<>(i -> getNow(stringFutures.get(i)));
+        typesFutures = new LookupMap<>(i -> transform(stringFutures.get(i), this::getTypes));
         shortStringFutures = new LookupMap<>(i -> transform(stringFutures.get(i), s -> s.replaceFirst("(.*)\\.class", "$1")));
 
     //anything that might be read by the constants has to exist at this point
@@ -68,12 +59,21 @@ public final class ClassFile extends Accessible {
             }
             q.add(INSTANCE.queueForResolution(constant));
         });
+        access = readUnsignedShort();
+        int thisClass = readUnsignedShort();
+        int superClass = readUnsignedShort();
+        Future<List<String>> interfaces = readShortStringsListFuture();
+        readObjects(Member::new, toList());
+        readObjects(Member::new, toList());
+        readAttributes();
     }
 
-    //<editor-fold desc="futureMaps">
+    //<editor-fold desc="constantMaps">
     private Map<Integer, Future<Constant>> constantFutures;
     
     protected Map<Integer, Future<String>> stringFutures;
+    
+    protected Map<Integer, String> strings;
     
     protected Map<Integer, Future<List<String>>> typesFutures;
     

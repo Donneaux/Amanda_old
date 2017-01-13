@@ -85,6 +85,10 @@ public abstract class Blob {
         return cF.stringFutures.get(readUnsignedShort());
     }
     
+    public String readString() {
+        return cF.strings.get(readUnsignedShort());
+    }
+    
     public Future<List<String>> readTypesFuture() {
         return cF.typesFutures.get(readUnsignedShort());
     }
