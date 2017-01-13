@@ -17,7 +17,7 @@ public class Member extends Accessible {
         access = cF.readUnsignedShort();
         Future<String> name = cF.readStringFuture();
         Future<List<String>> types = cF.readTypesFuture();
-        readAttributes();
+        readAttributes(cF);
     }
 
     @Override

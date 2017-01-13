@@ -2,16 +2,17 @@ package donnoe.amanda;
 
 import java.util.stream.Collectors;
 
-public abstract class Accessible extends Blob {
+/**
+ *
+ * @author joshuadonnoe
+ */
+public abstract class Attributable extends Blob {
 
-    protected Accessible(ClassFile cF) {
+    public Attributable(ClassFile cF) {
         super(cF);
     }
     
-    protected int access;
-    
-    
-    protected void readAttributes(ClassFile cF) {
+    protected final void readAttributes() {
         cF.readObjects(cf -> {
             cf.skip(2);
             cf.skip(cf.readInt());
