@@ -1,21 +1,11 @@
 package donnoe.amanda;
 
-import java.util.stream.Collectors;
-
-public abstract class Accessible extends Blob {
+public abstract class Accessible extends Attributable {
 
     protected Accessible(ClassFile cF) {
         super(cF);
     }
     
-    protected int access;
+    protected int access;//need to consider that this has synthetic attribute
     
-    
-    protected void readAttributes(ClassFile cF) {
-        cF.readObjects(cf -> {
-            cf.skip(2);
-            cf.skip(cf.readInt());
-            return null;
-        }, Collectors.toList());
-    }
 }

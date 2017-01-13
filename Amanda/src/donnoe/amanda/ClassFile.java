@@ -7,7 +7,6 @@ import java.util.concurrent.*;
 import java.util.stream.*;
 import static donnoe.amanda.Amanda.INSTANCE;
 import donnoe.amanda.constant.Constant;
-import static donnoe.util.Functions.ExceptionalFunction;
 import static donnoe.util.Futures.*;
 import donnoe.util.LookupMap;
 import static java.lang.String.*;
@@ -21,7 +20,7 @@ import java.util.ArrayDeque;
 import java.util.ArrayList;
 import static java.util.Collections.unmodifiableMap;
 import java.util.List;
-import java.util.function.Function;
+import static donnoe.util.Futures.*;
 import static java.util.function.Function.identity;
 import static java.util.stream.Stream.of;
 import static java.util.stream.IntStream.range;
@@ -40,24 +39,14 @@ public final class ClassFile extends Accessible {
             throw new IOError(x);
         }
         INSTANCE.println(String.format("0x%X%n%3$s.%s", readInt(), readUnsignedShort(), readUnsignedShort()));
-        readConstants();
-        access = readUnsignedShort();
-        int thisClass = readUnsignedShort();
-        int superClass = readUnsignedShort();
-        Future<List<String>> interfaces = readShortStringsListFuture();
-        readObjects(Member::new, toList());
-        readObjects(Member::new, toList());
-        readAttributes(this);
-    }
-
-    private void readConstants() {
         Map<Integer, BlockingQueue<Future<Constant>>> qs = IntStream.range(1, readUnsignedShort()).boxed().collect(toMap(i -> i, i -> new ArrayBlockingQueue<>(1)));
         constantFutures = qs.entrySet().stream().collect(toMap(
                 Map.Entry::getKey,
                 e -> Amanda.INSTANCE.exec.submit(() -> e.getValue().take().get())
         ));
         stringFutures = new LookupMap<>(i -> transform(constantFutures.get(i), Object::toString));
-        typesFutures = new LookupMap<>(i -> transform(stringFutures.get(i), s -> getTypes(s)));
+        strings = new LookupMap<>(i -> getNow(stringFutures.get(i)));
+        typesFutures = new LookupMap<>(i -> transform(stringFutures.get(i), this::getTypes));
         shortStringFutures = new LookupMap<>(i -> transform(stringFutures.get(i), s -> s.replaceFirst("(.*)\\.class", "$1")));
 
     //anything that might be read by the constants has to exist at this point
@@ -71,98 +60,28 @@ public final class ClassFile extends Accessible {
             }
             q.add(INSTANCE.queueForResolution(constant));
         });
+        access = readUnsignedShort();
+        int thisClass = readUnsignedShort();
+        int superClass = readUnsignedShort();
+        Future<List<String>> interfaces = readShortStringsListFuture();
+        readObjects(Member::new, toList());
+        readObjects(Member::new, toList());
+        readAttributes();
     }
 
-    //<editor-fold desc="futureMaps">
+    //<editor-fold desc="constantMaps">
     private Map<Integer, Future<Constant>> constantFutures;
     
-    private Map<Integer, Future<String>> stringFutures;
+    protected Map<Integer, Future<String>> stringFutures;
     
-    private Map<Integer, Future<List<String>>> typesFutures;
+    protected Map<Integer, String> strings;
     
-    private Map<Integer, Future<String>> shortStringFutures;
+    protected Map<Integer, Future<List<String>>> typesFutures;
+    protected Map<Integer, Future<String>> shortStringFutures;
     //</editor-fold>
     
-    //<editor-fold desc="input reading">
     public DataInputStream in;
 
-    public String readUTF() {
-        return read(dis -> dis.readUTF());
-    }
-    
-    public double readDouble() {
-        return read(DataInputStream::readDouble);
-    }
-    
-    public long readLong() {
-        return read(DataInputStream::readLong);
-    }
-    
-    public float readFloat() {
-        return read(DataInputStream::readFloat);
-    }
-    
-    public int readInt() {
-        return read(DataInputStream::readInt);
-    }
-    
-    public int readUnsignedShort() {
-        return read(DataInputStream::readUnsignedShort);
-    }
-    
-    public int readUnsignedByte() {
-        return read(DataInputStream::readUnsignedByte);
-    }
-    
-    public int skip(int n) {
-        return read(dis -> dis.skipBytes(n));
-    }
-    
-    private <T> T read(ExceptionalFunction<DataInputStream, T> f) {
-        try {
-            return f.apply(in);
-        } catch (IOException x) {
-            throw new IOError(x);
-        } catch (Exception x) {
-            throw new AssertionError();
-        }
-    }
-    
-    public <C extends Constant> Future<C> readConstantFuture() {
-        return getConstantFuture(readUnsignedShort());
-    }
-    
-    public Future<String> readStringFuture() {
-        return stringFutures.get(readUnsignedShort());
-    }
-    
-    public Future<List<String>> readTypesFuture() {
-        return typesFutures.get(readUnsignedShort());
-    }
-    
-    public Future<String> readShortStringFuture() {
-        return shortStringFutures.get(readUnsignedShort());
-    }
-    
-    public Future<List<String>> readShortStringsListFuture() {
-        return readObjects(ClassFile::readShortStringFuture, toListFuture());
-    }
-    
-    public <O, T> T readObjects(Function<ClassFile, O> f, Collector<O, ?, T> c) {
-        return readObjects(f, c, readUnsignedShort());
-    }
-    
-    public <O, T> T readObjects(Function<ClassFile, O> f, Collector<O, ?, T> c, int objectCount) {
-        return range(0, objectCount).mapToObj(i -> f.apply(this)).collect(c);
-    }
-    
-    public <B extends Blob> Future<List<B>> readItemFutureList(Function<ClassFile, B> f, int elementCount) {
-        return readObjects(f.andThen(INSTANCE::queueForResolution), collectingAndThen(toList(), Futures::transformList), elementCount);
-    }
-    
-    
-//</editor-fold>
-    
     //<editor-fold desc="statics">
     public static final Map<Character, String> ESCAPE_CHARACTERS = unmodifiableMap(new LookupMap<Character, String>(c -> c < 0x20 || c > 0x7e ? format("\\u%04x", (int) c) : valueOf(c)) {{
         put('\b', "\\b");
@@ -213,7 +132,7 @@ public final class ClassFile extends Accessible {
 //</editor-fold>
     
     //<editor-fold desc="type parsing">
-    private <C extends Constant> Future<C> getConstantFuture(int index) {
+    protected <C extends Constant> Future<C> getConstantFuture(int index) {
         return cast(constantFutures.get(index));
     }
     
