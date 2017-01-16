@@ -9,11 +9,10 @@ package donnoe.amanda;
  *
  * @author joshuadonnoe
  */
-public class UnrecognizedAttribute extends IgnoredAttribute {
+public class IgnoredAttribute extends Attribute {
 
-    public UnrecognizedAttribute(ClassFile cF, String name) {
-        super(cF);
-        Amanda.INSTANCE.println(name);
+    public IgnoredAttribute(ClassFile cF) {
+        cF.skip(cF.readInt());
     }
     
 }

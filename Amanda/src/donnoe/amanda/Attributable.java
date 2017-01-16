@@ -7,9 +7,10 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import static java.util.stream.Stream.of;
 import static java.util.stream.Collectors.*;
-import static java.util.Map.Entry;
 import static java.util.Collections.*;
 import java.util.HashMap;
+import java.util.stream.Collector;
+import java.util.stream.Stream;
 
 /**
  *
@@ -18,7 +19,15 @@ import java.util.HashMap;
 public abstract class Attributable extends Blob {
 
     private static final Map<String, BiFunction<ClassFile, String, Attribute>> ATTRIBUTE_CONSTRUCTORS = unmodifiableMap(
-            new DefaultMap<>(new HashMap<>(), UnrecognizedAttribute::new)
+            new DefaultMap<String, BiFunction<ClassFile, String, Attribute>> (
+                    new HashMap<String, Function<ClassFile, Attribute>>() {{
+                        putAll(of("SourceFile").collect(toMap(s -> s, s -> IgnoredAttribute::new)));
+                    }}.entrySet().stream().collect(toMap(
+                            Map.Entry::getKey,
+                            e -> (cF, s) -> new IgnoredAttribute(cF)
+                    )),
+                    UnrecognizedAttribute::new
+            )
     );
 
     static {

@@ -128,7 +128,7 @@ public final class ClassFile extends Accessible {
     public static Queue<Character> toQueue(String s) {
         return s.chars().mapToObj(i -> (char)i).sequential().collect(toCollection(ArrayDeque::new));
     }
-//</editor-fold>
+    //</editor-fold>
     
     //<editor-fold desc="type parsing">
     protected <C extends Constant> Future<C> getConstantFuture(int index) {
