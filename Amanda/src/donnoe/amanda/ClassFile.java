@@ -136,7 +136,6 @@ public final class ClassFile extends Accessible {
     }
     
     public List<String> getTypes(String s) {
-        System.out.println(s);
         return getTypes(toQueue(s));
     }
     
