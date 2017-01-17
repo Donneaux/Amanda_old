@@ -3,7 +3,11 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package donnoe.amanda;
+package donnoe.amanda.attributes;
+
+import donnoe.amanda.Amanda;
+import donnoe.amanda.ClassFile;
+import donnoe.amanda.attributes.IgnoredAttribute;
 
 /**
  *

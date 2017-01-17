@@ -1,5 +1,8 @@
 package donnoe.amanda;
 
+import donnoe.amanda.attributes.UnrecognizedAttribute;
+import donnoe.amanda.attributes.IgnoredAttribute;
+import donnoe.amanda.attributes.Attribute;
 import donnoe.util.DefaultMap;
 import java.util.Map;
 import java.util.function.BiFunction;
