@@ -1,7 +1,6 @@
 package donnoe.amanda;
 
 import donnoe.amanda.constant.Constant;
-import donnoe.util.Functions;
 import java.io.DataInputStream;
 import java.io.IOError;
 import java.io.IOException;
@@ -14,6 +13,7 @@ import static donnoe.util.concurrent.Futures.toListFuture;
 import static java.util.stream.IntStream.*;
 import static donnoe.amanda.Amanda.INSTANCE;
 import donnoe.util.concurrent.Futures;
+import java.util.concurrent.Callable;
 import static java.util.stream.Collectors.*;
 
 /**
@@ -32,9 +32,9 @@ public abstract class Blob {
         return cF.in;
     }
     
-    protected final <T> T read(Functions.ExceptionalFunction<DataInputStream, T> f) {
+    protected final <T> T read(Callable<T> c) {
         try {
-            return f.apply(dis());
+            return c.call();
         } catch (IOException x) {
             throw new IOError(x);
         } catch (Exception x) {
@@ -43,35 +43,35 @@ public abstract class Blob {
     }
     
     public final String readUTF() {
-        return read(dis -> dis.readUTF());
+        return read(() -> dis().readUTF());
     }
     
     public final double readDouble() {
-        return read(DataInputStream::readDouble);
+        return read(() -> dis().readDouble());
     }
     
     public final long readLong() {
-        return read(DataInputStream::readLong);
+        return read(() -> dis().readLong());
     }
     
     public final float readFloat() {
-        return read(DataInputStream::readFloat);
+        return read(() -> dis().readFloat());
     }
     
     public final int readInt() {
-        return read(DataInputStream::readInt);
+        return read(() -> dis().readInt());
     }
     
     public final int readUnsignedShort() {
-        return read(DataInputStream::readUnsignedShort);
+        return read(() -> dis().readUnsignedShort());
     }
     
     public final int readUnsignedByte() {
-        return read(DataInputStream::readUnsignedByte);
+        return read(() -> dis().readUnsignedByte());
     }
     
     public final int skip(int n) {
-        return read(dis -> dis.skipBytes(n));
+        return read(() -> dis().skipBytes(n));
     }
     
     public final <C extends Constant> Future<C> readConstantFuture() {
