@@ -1,7 +1,9 @@
 package donnoe.amanda.attributes;
 
+import donnoe.amanda.Amanda;
 import donnoe.amanda.Blob;
 import donnoe.amanda.ClassFile;
+import donnoe.util.concurrent.Futures;
 import static donnoe.util.concurrent.Futures.transform;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
@@ -15,8 +17,8 @@ public final class InnerClassInfo extends Blob {
     /**
      *
      */
-    public final int access;
     private final Future<String> realName;
+    public final int access;
     
     /**
      *
@@ -24,15 +26,13 @@ public final class InnerClassInfo extends Blob {
      */
     public InnerClassInfo(ClassFile cF) {
         super(cF);
-        skip(2);
         realName = transform(readShortStringFuture(), readStringFuture(), (o, i) -> o + '.' + i);
         access = readUnsignedShort();
     }
 
     @Override
     public void resolve() throws ExecutionException, InterruptedException {
-        sb.append("InnerClassInfo");
-       // sb.append(realName.get());
+        sb.append(realName.get());
     }
     
 }

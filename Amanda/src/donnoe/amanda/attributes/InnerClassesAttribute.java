@@ -21,7 +21,7 @@ public class InnerClassesAttribute extends RecognizedAttribute {
         innerClasses = readObjects(
             () -> cF,
             toMap(
-                    ClassFile::readUnsignedShort,
+                    ClassFile::readUnsignedShort,//this is the index of the ClassConstant that is a InnerClass
                     cf -> INSTANCE.queueForResolution(new InnerClassInfo(cf))
             )
         );
@@ -29,7 +29,7 @@ public class InnerClassesAttribute extends RecognizedAttribute {
 
     @Override
     public void resolve() throws ExecutionException, InterruptedException {
-        Futures.transformMapWithKnownKeys(innerClasses).get().entrySet().forEach(sb::append);
+        sb.append(Futures.transformMapWithKnownKeys(innerClasses).get());
     }
     
 }

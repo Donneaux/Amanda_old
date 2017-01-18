@@ -15,6 +15,7 @@ import java.util.Queue;
 import java.util.function.BiFunction;
 import static java.util.stream.Collectors.*;
 import static donnoe.amanda.constant.Constant.readConstant;
+import donnoe.util.concurrent.Futures;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import static java.util.Collections.unmodifiableMap;
@@ -41,6 +42,13 @@ public final class ClassFile extends Accessible {
                 Map.Entry::getKey,
                 e -> Amanda.INSTANCE.exec.submit(() -> e.getValue().take().get())
         ));
+        constantFutures.put(0, Amanda.INSTANCE.queueForResolution(new Constant(this) {
+            @Override
+            public void resolve() throws ExecutionException, InterruptedException {
+                sb.append("NULL");
+            }
+            
+        }));
         stringFutures = new LookupMap<>(i -> transform(constantFutures.get(i), Object::toString));
         strings = new LookupMap<>(i -> getNow(stringFutures.get(i)));
         typesFutures = new LookupMap<>(i -> transform(stringFutures.get(i), this::getTypes));
@@ -212,14 +220,14 @@ return clazz.toString();
     
     @Override
     public void resolve() throws ExecutionException, InterruptedException {
-        l.get().forEach(System.err::println);
-        
+        l.get().forEach(sb::append);
+        sb.append("\n");
         constantFutures.forEach(
                 (i, f) -> sb.append(
                         String.format(
                                 "%d = %s %s%n",
                                 i,
-                                getNow(f).getClass().getSimpleName(),
+                                getNow(f).getClass(),
                                 getNow(f)
                         )
                 )

@@ -26,7 +26,7 @@ public abstract class Attributable extends Blob {
             new DefaultMap<String, BiFunction<ClassFile, String, Attribute>> (
                     new HashMap<String, Function<ClassFile, Attribute>>() {{
                         putAll(of("SourceFile").collect(toMap(s -> s, s -> IgnoredAttribute::new)));
-//                        put("InnerClasses", InnerClassesAttribute::new);
+                        put("InnerClasses", InnerClassesAttribute::new);
                     }}.entrySet().stream().collect(toMap(
                             Map.Entry::getKey,
                             e -> (cF, s) -> e.getValue().apply(cF)

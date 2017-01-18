@@ -7,7 +7,6 @@ import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
-import java.util.function.Function;
 import java.util.stream.Collector;
 import static donnoe.util.concurrent.Futures.toListFuture;
 import static java.util.stream.IntStream.*;
