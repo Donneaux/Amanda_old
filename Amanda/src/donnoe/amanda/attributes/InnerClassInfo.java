@@ -24,14 +24,15 @@ public final class InnerClassInfo extends Blob {
      */
     public InnerClassInfo(ClassFile cF) {
         super(cF);
+        skip(2);
         realName = transform(readShortStringFuture(), readStringFuture(), (o, i) -> o + '.' + i);
         access = readUnsignedShort();
     }
 
     @Override
     public void resolve() throws ExecutionException, InterruptedException {
-        sb.append(realName.get());
+        sb.append("InnerClassInfo");
+       // sb.append(realName.get());
     }
     
 }
-

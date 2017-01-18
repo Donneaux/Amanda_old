@@ -14,6 +14,7 @@ import static java.util.stream.IntStream.*;
 import static donnoe.amanda.Amanda.INSTANCE;
 import donnoe.util.concurrent.Futures;
 import java.util.concurrent.Callable;
+import java.util.function.Supplier;
 import static java.util.stream.Collectors.*;
 
 /**
@@ -95,19 +96,23 @@ public abstract class Blob {
     }
 
     public final Future<List<String>> readShortStringsListFuture() {
-        return readObjects(ClassFile::readShortStringFuture, toListFuture());
+        return readObjects(this::readShortStringFuture, toListFuture());
     }
     
-    public final <O, T> T readObjects(Function<ClassFile, O> f, Collector<O, ?, T> c) {
-        return readObjects(f, c, readUnsignedShort());
+    public final <O, T> T readObjects(Supplier<O> s, Collector<O, ?, T> c) {
+        return readObjects(s, c, readUnsignedShort());
     }
     
-    public final <O, T> T readObjects(Function<ClassFile, O> f, Collector<O, ?, T> c, int objectCount) {
-        return range(0, objectCount).mapToObj(i -> f.apply(cF)).collect(c);
+    public final <O, T> T readObjects(Supplier<O> s, Collector<O, ?, T> c, int objectCount) {
+        return range(0, objectCount).mapToObj(i -> s.get()).collect(c);
     }
     
-    public final <B extends Blob> Future<List<B>> readItemFutureList(Function<ClassFile, B> f, int elementCount) {
-        return readObjects(f.andThen(INSTANCE::queueForResolution), collectingAndThen(toList(), Futures::transformList), elementCount);
+    public final <B extends Blob> Future<List<B>> readItemFutureList(Supplier<B> s, int elementCount) {
+        return readObjects(
+                () -> INSTANCE.queueForResolution(s.get()),
+                collectingAndThen(toList(), Futures::transformList),
+                elementCount
+        );
     }
     //</editor-fold>
 

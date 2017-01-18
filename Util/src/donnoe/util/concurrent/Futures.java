@@ -1,5 +1,6 @@
 package donnoe.util.concurrent;
 
+import donnoe.util.ReadOnlyEntry;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
@@ -15,6 +16,8 @@ import static donnoe.util.concurrent.AccumulatingFuture.ofLeafFutures;
 import static java.util.Arrays.*;
 import java.util.function.BiFunction;
 import java.util.stream.Collector;
+import static java.util.Map.Entry;
+import java.util.stream.Stream;
 
 public class Futures {
     private Futures() {}
@@ -122,6 +125,34 @@ public class Futures {
                                 toList(),
                                 Collections::unmodifiableList
                         )
+                )
+        );
+    }
+    
+    public static <K, V> Future<Entry<K, V>> transformEntryWithKnownKey(Entry<K, Future<V>> entry) {
+        Future<Entry<K, V>> future = help(new ForwardingFuture<Entry<K, V>>(entry.getValue()) {
+
+            @Override
+            public Entry<K, V> get() throws InterruptedException, ExecutionException {
+                return new ReadOnlyEntry<>(entry.getKey(), entry.getValue().get());
+            }
+
+            @Override
+            public Entry<K, V> get(long timeout, TimeUnit unit) throws InterruptedException, ExecutionException, TimeoutException {
+                return new ReadOnlyEntry<>(entry.getKey(), entry.getValue().get(timeout, unit));
+            }
+
+        });
+        return future;
+    }
+    
+    public static <K, V> Future<Map<K, V>> transformMapWithKnownKeys(Map<K, Future<V>> map) {
+        return help(
+                new AccumulatingFuture<>(
+                        map.entrySet()::stream,
+                        e -> Stream.of(e.getValue()),
+                        Futures::transformEntryWithKnownKey,
+                        toMap(Entry::getKey, Entry::getValue)
                 )
         );
     }

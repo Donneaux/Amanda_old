@@ -61,8 +61,8 @@ public final class ClassFile extends Accessible {
         int thisClass = readUnsignedShort();
         int superClass = readUnsignedShort();
         Future<List<String>> interfaces = readShortStringsListFuture();
-        readObjects(Member::new, toList());
-        readObjects(Member::new, toList());
+        readObjects(() -> new Member(this), toList());
+        readObjects(() -> new Member(this), toList());
         readAttributes();
     }
 
@@ -212,6 +212,8 @@ return clazz.toString();
     
     @Override
     public void resolve() throws ExecutionException, InterruptedException {
+        l.get().forEach(System.err::println);
+        
         constantFutures.forEach(
                 (i, f) -> sb.append(
                         String.format(

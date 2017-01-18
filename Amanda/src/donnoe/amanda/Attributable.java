@@ -13,6 +13,8 @@ import static java.util.stream.Stream.of;
 import static java.util.stream.Collectors.*;
 import static java.util.Collections.*;
 import java.util.HashMap;
+import java.util.List;
+import java.util.concurrent.Future;
 
 /**
  *
@@ -24,10 +26,10 @@ public abstract class Attributable extends Blob {
             new DefaultMap<String, BiFunction<ClassFile, String, Attribute>> (
                     new HashMap<String, Function<ClassFile, Attribute>>() {{
                         putAll(of("SourceFile").collect(toMap(s -> s, s -> IgnoredAttribute::new)));
-                        put("InnerClasses", InnerClassesAttribute::new);
+//                        put("InnerClasses", InnerClassesAttribute::new);
                     }}.entrySet().stream().collect(toMap(
                             Map.Entry::getKey,
-                            e -> (cF, s) -> new IgnoredAttribute(cF)
+                            e -> (cF, s) -> e.getValue().apply(cF)
                     )),
                     UnrecognizedAttribute::new
             )
@@ -52,10 +54,9 @@ public abstract class Attributable extends Blob {
         super(cF);
     }
     
+    public Future<List<Attribute>> l;
     protected final void readAttributes() {
-        cF.readObjects(cf -> {
-            return readAttribute();
-        }, Collectors.toList());
+        l = readItemFutureList(this::readAttribute, readUnsignedShort());
     }
     
     private Attribute readAttribute() {
