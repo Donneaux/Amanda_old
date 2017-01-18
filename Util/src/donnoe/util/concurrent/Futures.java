@@ -107,10 +107,12 @@ public class Futures {
     }
     
     public static <T, U, R> Future<R> transform(Future<T> future1, Future<U> future2, BiFunction<T, U, R> function) {
-        return help(new TransformingFuture<>(
+        return help(
+            new TransformingFuture<>(
                 transformList(asList((Future)future1, future2)),
                 () -> function.apply(future1.get(), future2.get())
-        ));
+            )
+        );
     }
     
     public static <T> Future<T> help(Future<T> future) {
