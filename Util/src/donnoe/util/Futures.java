@@ -1,12 +1,10 @@
 package donnoe.util;
 
-import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.function.Function;
-import static java.lang.Thread.interrupted;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -14,6 +12,8 @@ import java.util.concurrent.CancellationException;
 import java.util.concurrent.ConcurrentHashMap;
 import static java.util.stream.Collectors.*;
 import static donnoe.util.AccumulatingFuture.ofLeafFutures;
+import static java.util.Arrays.*;
+import java.util.function.BiFunction;
 import java.util.stream.Collector;
 
 public class Futures {
@@ -100,45 +100,14 @@ public class Futures {
     }    
     
     public static <T, R> Future<R> transform(Future<T> future, Function<T, R> function) {
-        return new ForwardingFuture<R>(future) {
-            @Override
-            public R get() throws InterruptedException, ExecutionException {
-                return calculateInterruptably(() -> function.apply(future.get()));
-            }
-            
-            @Override
-            public R get(long timeout, TimeUnit unit) throws InterruptedException, ExecutionException, TimeoutException {
-                return calculateWithin(() -> function.apply(future.get()), unit.toMillis(timeout));
-            }
-        };
+        return help(new TransformingFuture<>(future, () -> function.apply(future.get())));
     }
     
-    static <V> V calculateWithin(Callable<V> callable, long millis) throws InterruptedException, TimeoutException, ExecutionException {
-        CalculatingThread<V> thread = new CalculatingThread<>(callable);
-        thread.start();
-        try {
-            thread.join(millis);
-            return thread.status.get(thread);
-        } catch (InterruptedException x) {
-            //if this thread is interrupted, then interrupt the calculating thread
-            thread.interrupt();
-            //thread can die now, right?
-            
-            //https://docs.oracle.com/javase/tutorial/essential/concurrency/interrupt.html
-            //"By convention, any method that exits by throwing an InterruptedException...
-            //clears interrupt status when it does so. However, it's always possible...
-            //that interrupt status will immediately be set again, by another thread invoking interrupt."
-            interrupted();
-            throw x;
-        }
-    }
-
-    static <V> V calculateInterruptably(Callable<V> gettable) throws InterruptedException, ExecutionException {
-        try {
-            return calculateWithin(gettable, 0);
-        } catch (TimeoutException x) {
-            throw new AssertionError();
-        }
+    public static <T, U, R> Future<R> transform(Future<T> future1, Future<U> future2, BiFunction<T, U, R> function) {
+        return help(new TransformingFuture<>(
+                transformList(asList((Future)future1, future2)),
+                () -> function.apply(future1.get(), future2.get())
+        ));
     }
     
     public static <T> Future<T> help(Future<T> future) {
