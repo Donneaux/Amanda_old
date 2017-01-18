@@ -1,9 +1,9 @@
-package donnoe.util;
+package donnoe.util.concurrent;
 
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
-import static donnoe.util.ValueStatus.*;
+import static donnoe.util.concurrent.ValueStatus.*;
 
 /**
  *

@@ -1,4 +1,4 @@
-package donnoe.util;
+package donnoe.util.concurrent;
 
 import static java.lang.System.currentTimeMillis;
 import java.util.concurrent.Callable;

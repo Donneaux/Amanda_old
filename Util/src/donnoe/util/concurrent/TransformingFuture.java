@@ -1,4 +1,4 @@
-package donnoe.util;
+package donnoe.util.concurrent;
 
 import static java.lang.Thread.interrupted;
 import java.util.concurrent.Callable;

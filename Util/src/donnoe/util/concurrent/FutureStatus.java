@@ -1,17 +1,17 @@
-package donnoe.util;
+package donnoe.util.concurrent;
 
 import java.util.Map;
 import java.util.WeakHashMap;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
-import static donnoe.util.ValueStatus.*;
+import static donnoe.util.concurrent.ValueStatus.*;
 
 /**
  *
  * @author joshuadonnoe
  */
-public enum FutureStatus {
+enum FutureStatus {
     CANCELLED(DOES_NOT_EXIST) {
         @Override
         public <V> V getNowHelper(Future<V> f) {

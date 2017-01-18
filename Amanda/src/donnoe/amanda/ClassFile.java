@@ -7,7 +7,7 @@ import java.util.concurrent.*;
 import java.util.stream.*;
 import static donnoe.amanda.Amanda.INSTANCE;
 import donnoe.amanda.constant.Constant;
-import static donnoe.util.Futures.*;
+import static donnoe.util.concurrent.Futures.*;
 import donnoe.util.LookupMap;
 import static java.lang.String.*;
 import java.util.HashMap;

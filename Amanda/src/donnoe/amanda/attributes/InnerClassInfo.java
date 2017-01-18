@@ -2,7 +2,7 @@ package donnoe.amanda.attributes;
 
 import donnoe.amanda.Blob;
 import donnoe.amanda.ClassFile;
-import static donnoe.util.Futures.transform;
+import static donnoe.util.concurrent.Futures.transform;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 

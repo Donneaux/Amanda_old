@@ -1,7 +1,7 @@
-package donnoe.util;
+package donnoe.util.concurrent;
 
-import static donnoe.util.ValueStatus.KNOWN;
-import static donnoe.util.ValueStatus.PENDING;
+import static donnoe.util.concurrent.ValueStatus.KNOWN;
+import static donnoe.util.concurrent.ValueStatus.PENDING;
 import static java.lang.System.currentTimeMillis;
 import static java.util.Comparator.naturalOrder;
 import java.util.concurrent.CompletionException;

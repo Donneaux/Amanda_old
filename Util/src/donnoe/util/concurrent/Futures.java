@@ -1,4 +1,4 @@
-package donnoe.util;
+package donnoe.util.concurrent;
 
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
@@ -11,7 +11,7 @@ import java.util.Map;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.ConcurrentHashMap;
 import static java.util.stream.Collectors.*;
-import static donnoe.util.AccumulatingFuture.ofLeafFutures;
+import static donnoe.util.concurrent.AccumulatingFuture.ofLeafFutures;
 import static java.util.Arrays.*;
 import java.util.function.BiFunction;
 import java.util.stream.Collector;

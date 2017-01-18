@@ -1,4 +1,4 @@
-package donnoe.util;
+package donnoe.util.concurrent;
 
 import java.util.concurrent.Future;
 

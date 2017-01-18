@@ -10,10 +10,10 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.function.Function;
 import java.util.stream.Collector;
-import static donnoe.util.Futures.toListFuture;
+import static donnoe.util.concurrent.Futures.toListFuture;
 import static java.util.stream.IntStream.*;
 import static donnoe.amanda.Amanda.INSTANCE;
-import donnoe.util.Futures;
+import donnoe.util.concurrent.Futures;
 import static java.util.stream.Collectors.*;
 
 /**
