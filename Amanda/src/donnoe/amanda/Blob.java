@@ -74,39 +74,39 @@ public abstract class Blob {
         return read(dis -> dis.skipBytes(n));
     }
     
-    public <C extends Constant> Future<C> readConstantFuture() {
+    public final <C extends Constant> Future<C> readConstantFuture() {
         return cF.getConstantFuture(readUnsignedShort());
     }
     
-    public Future<String> readStringFuture() {
+    public final Future<String> readStringFuture() {
         return cF.stringFutures.get(readUnsignedShort());
     }
     
-    public String readString() {
+    public final String readString() {
         return cF.strings.get(readUnsignedShort());
     }
     
-    public Future<List<String>> readTypesFuture() {
+    public final Future<List<String>> readTypesFuture() {
         return cF.typesFutures.get(readUnsignedShort());
     }
     
-    public Future<String> readShortStringFuture() {
+    public final Future<String> readShortStringFuture() {
         return cF.shortStringFutures.get(readUnsignedShort());
     }
 
-    public Future<List<String>> readShortStringsListFuture() {
+    public final Future<List<String>> readShortStringsListFuture() {
         return readObjects(ClassFile::readShortStringFuture, toListFuture());
     }
     
-    public <O, T> T readObjects(Function<ClassFile, O> f, Collector<O, ?, T> c) {
+    public final <O, T> T readObjects(Function<ClassFile, O> f, Collector<O, ?, T> c) {
         return readObjects(f, c, readUnsignedShort());
     }
     
-    public <O, T> T readObjects(Function<ClassFile, O> f, Collector<O, ?, T> c, int objectCount) {
+    public final <O, T> T readObjects(Function<ClassFile, O> f, Collector<O, ?, T> c, int objectCount) {
         return range(0, objectCount).mapToObj(i -> f.apply(cF)).collect(c);
     }
     
-    public <B extends Blob> Future<List<B>> readItemFutureList(Function<ClassFile, B> f, int elementCount) {
+    public final <B extends Blob> Future<List<B>> readItemFutureList(Function<ClassFile, B> f, int elementCount) {
         return readObjects(f.andThen(INSTANCE::queueForResolution), collectingAndThen(toList(), Futures::transformList), elementCount);
     }
     //</editor-fold>
