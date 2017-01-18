@@ -9,7 +9,7 @@ import java.util.concurrent.TimeoutException;
  *
  * @author joshuadonnoe
  */
-final class FutureOf<T> implements Future<T> {
+public final class FutureOf<T> implements Future<T> {
 
     private final T t;
 

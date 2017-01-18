@@ -10,7 +10,7 @@ import java.util.Set;
  * @param <K>
  * @param <V>
  */
-abstract public class ForwardingMap<K, V> implements Map<K, V> {
+public abstract class ForwardingMap<K, V> implements Map<K, V> {
 
     protected final Map<K, V> delegate;
 

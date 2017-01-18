@@ -8,7 +8,7 @@ import java.util.concurrent.TimeoutException;
  *
  * @author joshuadonnoe
  */
-enum ValueStatus {
+public enum ValueStatus {
 
     /**
      * DO NOT CHANGE THE ORDER.

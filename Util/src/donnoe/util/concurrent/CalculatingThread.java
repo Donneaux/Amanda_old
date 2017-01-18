@@ -10,7 +10,7 @@ import static donnoe.util.concurrent.ValueStatus.*;
  * @author joshuadonnoe
  * @param <V>
  */
-final class CalculatingThread<V> extends Thread {
+public final class CalculatingThread<V> extends Thread {
 
     protected V v;
 

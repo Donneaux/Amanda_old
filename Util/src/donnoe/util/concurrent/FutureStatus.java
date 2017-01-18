@@ -11,7 +11,7 @@ import static donnoe.util.concurrent.ValueStatus.*;
  *
  * @author joshuadonnoe
  */
-enum FutureStatus {
+public enum FutureStatus {
     CANCELLED(DOES_NOT_EXIST) {
         @Override
         public <V> V getNowHelper(Future<V> f) {

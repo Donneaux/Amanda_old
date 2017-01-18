@@ -24,7 +24,7 @@ import static java.util.function.Function.identity;
  * @param <TT>
  * @param <R>
  */
-final class AccumulatingFuture<T, TT, R> implements Future<R> {
+public final class AccumulatingFuture<T, TT, R> implements Future<R> {
 
     /**
      * When T == Future&lt;TT&gt;. By Leaf I mean leaf in a tree of composition

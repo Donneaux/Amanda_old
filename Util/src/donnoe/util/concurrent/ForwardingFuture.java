@@ -6,7 +6,7 @@ import java.util.concurrent.Future;
  *
  * @author joshuadonnoe
  */
-abstract class ForwardingFuture<V> implements Future<V> {
+public abstract class ForwardingFuture<V> implements Future<V> {
 
     protected volatile Future<?> f;
 
