@@ -3,6 +3,7 @@ package donnoe.amanda;
 import donnoe.amanda.attributes.UnrecognizedAttribute;
 import donnoe.amanda.attributes.IgnoredAttribute;
 import donnoe.amanda.attributes.Attribute;
+import donnoe.amanda.attributes.InnerClassesAttribute;
 import donnoe.util.DefaultMap;
 import java.util.Map;
 import java.util.function.BiFunction;
@@ -23,6 +24,7 @@ public abstract class Attributable extends Blob {
             new DefaultMap<String, BiFunction<ClassFile, String, Attribute>> (
                     new HashMap<String, Function<ClassFile, Attribute>>() {{
                         putAll(of("SourceFile").collect(toMap(s -> s, s -> IgnoredAttribute::new)));
+                        put("InnerClasses", InnerClassesAttribute::new);
                     }}.entrySet().stream().collect(toMap(
                             Map.Entry::getKey,
                             e -> (cF, s) -> new IgnoredAttribute(cF)
