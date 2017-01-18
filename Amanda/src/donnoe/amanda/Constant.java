@@ -4,7 +4,7 @@ package donnoe.amanda;
  *
  * @author joshuadonnoe
  */
-public class Constant extends Blob {
+public abstract class Constant extends Blob {
     public static Constant readConstant(ClassFile cF, int index) {
         int b = cF.readUnsignedByte();
         switch (b) {
@@ -19,8 +19,9 @@ public class Constant extends Blob {
             case 0x06:
                 return TwoWordPrimativeConstant.readDoubleConstant(cF);
             case 0x07:
+                return new ClassConstant(cF);
             case 0x08:
-                return new SingleWordConstant(cF);
+                return new StringConstant(cF);
             case 0x09:
             case 0x0A:
             case 0x0B:

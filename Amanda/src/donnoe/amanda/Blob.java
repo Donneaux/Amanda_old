@@ -1,10 +1,12 @@
 package donnoe.amanda;
 
+import java.util.concurrent.ExecutionException;
+
 /**
  *
  * @author joshuadonnoe
  */
-public class Blob {
+public abstract class Blob {
     protected final StringBuilder sb = new StringBuilder();
-    public void resolve() {}
+    public abstract void resolve()throws ExecutionException, InterruptedException;
 }

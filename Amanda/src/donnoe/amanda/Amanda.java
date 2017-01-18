@@ -21,7 +21,8 @@ public enum Amanda implements Function<String, String> {
         double i = 1 << (1 << 4);
         try {
             isVerbose = args.length > 1;
-            System.out.println(INSTANCE.apply(args[0]));
+            System.out.println(INSTANCE.queueForResolution(new ClassFile(args[0])).get());
+        } catch (ExecutionException | InterruptedException x) {
         } finally {
             INSTANCE.exec.shutdownNow();
         }
@@ -53,11 +54,28 @@ public enum Amanda implements Function<String, String> {
      * @param o
      */
     public void println(Object o) {
-        stream.println(o);
+        print(o + "\n");
     }
 
+    public void printf(String format, Object... args) {
+        print(String.format(format, args));
+    }
+    
+    public void print(Object o) {
+        stream.print(o);
+    }
+    
     public <B extends Blob> Future<B> queueForResolution(B b) {
-        return exec.submit(() -> b.resolve(), b);
+        return exec.submit(
+                () -> {
+                    try {
+                        b.resolve();
+                    } finally {
+                        return;
+                    }
+                },
+                b
+        );
     }
     
 }
