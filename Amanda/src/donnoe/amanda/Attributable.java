@@ -18,7 +18,10 @@ import static donnoe.amanda.Amanda.INSTANCE;
 import donnoe.util.concurrent.Futures;
 import static java.util.Arrays.asList;
 import static java.util.Map.Entry;
+<<<<<<< HEAD
 import java.util.stream.Collector;
+=======
+>>>>>>> 1af3c22053ac8f72241298f7cc83eb845fdebfbc
 
 /**
  *
