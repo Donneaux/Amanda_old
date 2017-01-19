@@ -8,13 +8,17 @@ import donnoe.util.DefaultMap;
 import java.util.Map;
 import java.util.function.BiFunction;
 import java.util.function.Function;
-import java.util.stream.Collectors;
-import static java.util.stream.Stream.of;
+import static java.util.stream.Stream.*;
 import static java.util.stream.Collectors.*;
 import static java.util.Collections.*;
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.Future;
+import static donnoe.amanda.Amanda.INSTANCE;
+import donnoe.util.concurrent.Futures;
+import static java.util.Arrays.asList;
+import static java.util.Map.Entry;
+import java.util.stream.Collector;
 
 /**
  *
@@ -23,11 +27,13 @@ import java.util.concurrent.Future;
 public abstract class Attributable extends Blob {
 
     private static final Map<String, BiFunction<ClassFile, String, Attribute>> ATTRIBUTE_CONSTRUCTORS = unmodifiableMap(
-            new DefaultMap<String, BiFunction<ClassFile, String, Attribute>> (
-                    new HashMap<String, Function<ClassFile, Attribute>>() {{
-                        putAll(of("SourceFile").collect(toMap(s -> s, s -> IgnoredAttribute::new)));
-                        put("InnerClasses", InnerClassesAttribute::new);
-                    }}.entrySet().stream().collect(toMap(
+            new DefaultMap<String, BiFunction<ClassFile, String, Attribute>>(
+                    new HashMap<String, Function<ClassFile, Attribute>>() {
+                        {
+                            putAll(of("SourceFile").collect(toMap(s -> s, s -> IgnoredAttribute::new)));
+                            put("InnerClasses", InnerClassesAttribute::new);
+                        }
+                    }.entrySet().stream().collect(toMap(
                             Map.Entry::getKey,
                             e -> (cF, s) -> e.getValue().apply(cF)
                     )),
@@ -48,17 +54,30 @@ public abstract class Attributable extends Blob {
 //        constructors.put("AnnotationDefault", AnnotationDefaultAttribute::new);
 //        constructors.put("Synthetic", SyntheticAttribute::new);
 //        ATTRIBUTE_CONSTRUCTORS = donnoe.util.DefaultMap.unmodifiable(constructors.entrySet().stream().collect(toMap(Entry::getKey, e -> (c, s) -> e.getValue().apply(c))), UnrecognizedAttribute::new);
-    }    
-    
+    }
+
     public Attributable(ClassFile cF) {
         super(cF);
     }
-    
-    public Future<List<Attribute>> l;
+
+    private Future<Map<Class<? extends Attribute>, List<Attribute>>> attributes;
+
     protected final void readAttributes() {
-        l = readItemFutureList(this::readAttribute, readUnsignedShort());
+        attributes = readObjects(
+                        this::readAttribute,
+                        toMap(
+                                Attribute::getClass,
+                                a -> asList(INSTANCE.queueForResolution(a)),
+                                (l1, l2) -> concat(l1.stream(), l2.stream()).collect(toList())
+                        )
+                ).entrySet().stream().collect(
+                        collectingAndThen(toMap(
+                                Entry::getKey,
+                                e -> Futures.transformList(e.getValue())
+                        ), Futures::transformMapWithKnownKeys)
+                );
     }
-    
+
     private Attribute readAttribute() {
         String name = readString();
         return ATTRIBUTE_CONSTRUCTORS.get(name).apply(cF, name);

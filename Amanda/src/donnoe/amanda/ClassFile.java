@@ -220,7 +220,7 @@ return clazz.toString();
     
     @Override
     public void resolve() throws ExecutionException, InterruptedException {
-        l.get().forEach(sb::append);
+//        l.get().forEach(sb::append);
         sb.append("\n");
         constantFutures.forEach(
                 (i, f) -> sb.append(

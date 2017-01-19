@@ -42,7 +42,8 @@ public enum Amanda {
         try {
             return queueForResolution(new ClassFile(clazz)).get().toString();
         } catch (ExecutionException | InterruptedException x) {
-            throw new IllegalStateException("Compilation failed");
+//            x.printStackTrace(stream);
+            throw new IllegalStateException("Decompilation failed");
         }
     }
 
