@@ -22,7 +22,7 @@ public enum Amanda {
     public static void main(String[] args) {
         try {
             INSTANCE.setStream(args.length > 1);
-            out.println(INSTANCE.decompile(args[0]));
+            out.print(INSTANCE.decompile(args[0]));
         } finally {
             INSTANCE.exec.shutdownNow();
         }

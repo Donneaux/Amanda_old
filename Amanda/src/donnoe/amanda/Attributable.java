@@ -18,7 +18,6 @@ import static donnoe.amanda.Amanda.INSTANCE;
 import donnoe.util.concurrent.Futures;
 import static java.util.Arrays.asList;
 import static java.util.Map.Entry;
-import java.util.stream.Collector;
 
 /**
  *
@@ -41,8 +40,8 @@ public abstract class Attributable extends Blob {
             )
     );
 
-    static {
-        final Map<String, Function<ClassFile, Attribute>> constructors = of("SourceFile", "LineNumberTable", "LocalVariableTable", "LocalVariableTypeTable", "org.netbeans.SourceLevelAnnotations", "Deprecated").collect(toMap(s -> s, s -> IgnoredAttribute::new));
+//    static {
+//        final Map<String, Function<ClassFile, Attribute>> constructors = of("SourceFile", "LineNumberTable", "LocalVariableTable", "LocalVariableTypeTable", "org.netbeans.SourceLevelAnnotations", "Deprecated").collect(toMap(s -> s, s -> IgnoredAttribute::new));
 //        constructors.put("ConstantValue", ConstantValueAttribute::new);
 //        constructors.put("Code", CodeAttribute::new);
 //        constructors.put("Exceptions", ExceptionsAttribute::new);
@@ -54,7 +53,7 @@ public abstract class Attributable extends Blob {
 //        constructors.put("AnnotationDefault", AnnotationDefaultAttribute::new);
 //        constructors.put("Synthetic", SyntheticAttribute::new);
 //        ATTRIBUTE_CONSTRUCTORS = donnoe.util.DefaultMap.unmodifiable(constructors.entrySet().stream().collect(toMap(Entry::getKey, e -> (c, s) -> e.getValue().apply(c))), UnrecognizedAttribute::new);
-    }
+//    }
 
     public Attributable(ClassFile cF) {
         super(cF);

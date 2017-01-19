@@ -15,7 +15,6 @@ import java.util.Queue;
 import java.util.function.BiFunction;
 import static java.util.stream.Collectors.*;
 import static donnoe.amanda.constant.Constant.readConstant;
-import donnoe.util.concurrent.Futures;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import static java.util.Collections.unmodifiableMap;
@@ -221,7 +220,6 @@ return clazz.toString();
     @Override
     public void resolve() throws ExecutionException, InterruptedException {
 //        l.get().forEach(sb::append);
-        sb.append("\n");
         constantFutures.forEach(
                 (i, f) -> sb.append(
                         String.format(
@@ -232,6 +230,5 @@ return clazz.toString();
                         )
                 )
         );
-        sb.append(constantFutures.size());
     }
 }
