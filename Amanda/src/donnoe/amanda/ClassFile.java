@@ -6,6 +6,8 @@ import java.util.Map;
 import java.util.concurrent.*;
 import java.util.stream.*;
 import static donnoe.amanda.Amanda.INSTANCE;
+import donnoe.amanda.attributes.InnerClassInfo;
+import donnoe.amanda.attributes.InnerClassesAttribute;
 import donnoe.amanda.constant.Constant;
 import static donnoe.util.concurrent.Futures.*;
 import donnoe.util.LookupMap;
@@ -15,6 +17,7 @@ import java.util.Queue;
 import java.util.function.BiFunction;
 import static java.util.stream.Collectors.*;
 import static donnoe.amanda.constant.Constant.readConstant;
+import donnoe.util.concurrent.Futures;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import static java.util.Collections.unmodifiableMap;
@@ -83,6 +86,8 @@ public final class ClassFile extends Accessible {
     protected Map<Integer, Future<String>> shortStringFutures;
     //</editor-fold>
     
+    public final Future<Map<Integer, Future<InnerClassInfo>>> innerClasses = Futures.transform(getAttributeFuture(InnerClassesAttribute.class), iC -> iC.innerClasses);
+
     public DataInputStream in;
 
     //<editor-fold desc="statics">
@@ -220,15 +225,16 @@ return clazz.toString();
     @Override
     public void resolve() throws ExecutionException, InterruptedException {
 //        l.get().forEach(sb::append);
-        constantFutures.forEach(
-                (i, f) -> sb.append(
-                        String.format(
-                                "%d = %s %s%n",
-                                i,
-                                getNow(f).getClass(),
-                                getNow(f)
-                        )
-                )
-        );
+//        System.out.println(Futures.transformMapWithKnownKeys(innerClasses.get()).get());
+//        constantFutures.forEach(
+//                (i, f) -> sb.append(
+//                        String.format(
+//                                "%d = %s %s%n",
+//                                i,
+//                                getNow(f).getClass(),
+//                                getNow(f)
+//                        )
+//                )
+//        );
     }
 }

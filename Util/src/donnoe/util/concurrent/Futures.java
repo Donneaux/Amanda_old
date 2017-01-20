@@ -115,8 +115,12 @@ public class Futures {
         );
     }
     
+    public static <T> Future<T> unwrap(Future<Future<T>> f) {
+        return new UnwrappingFuture<>(f);
+    }
+    
     public static <T> Future<T> help(Future<T> future) {
-        return new UnwrappingFuture<>(Futures.of(future));
+        return unwrap(Futures.of(future));
     }
     
     public static <T> Future<List<T>> transformList(List<Future<T>> list) {
@@ -161,5 +165,17 @@ public class Futures {
     
     public static <T> Collector<Future<T>, ?, Future<List<T>>> toListFuture() {
         return collectingAndThen(toList(), Futures::transformList);
+    }
+    
+    public static <T> Future<T> getFromListFuture(Future<List<T>> list, int index) {
+        return Futures.transform(list, l -> l.get(index));
+    }
+    
+    public static <K, V> Future<V> getFromMapFuture(Future<Map<K, V>> map , K k) {
+        return Futures.transform(map, m -> m.get(k));
+    }
+    
+    public static <K, V> Future<V> getOrDefaultFromMapFuture(Future<Map<K, V>> map , K k, V def) {
+        return Futures.transform(map, m -> m.getOrDefault(k, def));
     }
 }

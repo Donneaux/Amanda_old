@@ -76,7 +76,11 @@ public class UnwrappingFuture<T> extends ForwardingFuture<T> {
             } catch (TimeoutException x) {
                 throw x;
             } catch (Exception x) {
-                throw new AssertionError(x);
+                synchronized (UnwrappingFuture.class) {
+                    System.err.println("Something Went Wrong");
+                    x.printStackTrace();
+                    System.exit(1);
+                }
             }
             @SuppressWarnings("unchecked")
             T t = (T) UnwrappingFuture.this.f.get();
