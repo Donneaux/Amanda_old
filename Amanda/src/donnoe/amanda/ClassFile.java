@@ -226,6 +226,7 @@ return clazz.toString();
     public void resolve() throws ExecutionException, InterruptedException {
 //        l.get().forEach(sb::append);
 //        System.out.println(Futures.transformMapWithKnownKeys(innerClasses.get()).get());
+        sb.append(Futures.transformMapWithKnownKeys(constantFutures).get());
 //        constantFutures.forEach(
 //                (i, f) -> sb.append(
 //                        String.format(

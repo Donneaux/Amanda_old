@@ -62,9 +62,8 @@ public abstract class Attributable extends Blob {
         super(cF);
     }
 
-    private final BlockingQueue<Future<TypeSafeHeterogenousContainer<Attribute>>> q = new ArrayBlockingQueue<>(1);
-
-    private final Future<TypeSafeHeterogenousContainer<Attribute>> attributes = Amanda.INSTANCE.exec.submit(() -> q.take().get());
+    public final BlockingQueue<Future<TypeSafeHeterogenousContainer<Attribute>>> q = new ArrayBlockingQueue<>(1);
+    public final Future<TypeSafeHeterogenousContainer<Attribute>> attributes = Amanda.INSTANCE.exec.submit(() -> q.take().get());
 
     protected final void readAttributes() {
         q.add(Futures.transform(
@@ -93,7 +92,7 @@ public abstract class Attributable extends Blob {
     }
 
     public final <A extends Attribute> Future<List<A>> getAttributeFutures(Class<A> clazz) {
-        return Futures.transform(attributes, tshc -> {List<A> l = tshc.get(clazz); System.out.println("found atttribute");return l;});
+        return Futures.transform(attributes, tshc -> tshc.get(clazz));
     }
 
     public final <A extends Attribute> Future<A> getAttributeFuture(Class<A> clazz) {

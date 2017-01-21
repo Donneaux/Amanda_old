@@ -11,6 +11,8 @@ import java.util.function.BiFunction;
 import static java.util.Collections.*;
 import java.util.HashMap;
 import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 /**
  * Much work needed
@@ -20,12 +22,9 @@ import java.util.concurrent.Future;
 public final class ClassConstant extends UTFBasedConstant {
 
     private final Future<InnerClassInfo> innerClassInfo;
-        Future<Map<Integer, Future<InnerClassInfo>>> x;
     public ClassConstant(ClassFile cF, int index) {
         super(cF);
-        x = cF.innerClasses;
-        innerClassInfo = 
-                Futures.unwrap(Futures.getOrDefaultFromMapFuture(cF.innerClasses, index, Futures.of(null)));
+        innerClassInfo = Futures.unwrap(Futures.getOrDefaultFromMapFuture(cF.innerClasses, index, Futures.of(null)));
     }
 
     private static final Map<Character, BiFunction<ClassFile, Queue<Character>, String>> TYPE_GETTERS =
@@ -40,10 +39,12 @@ public final class ClassConstant extends UTFBasedConstant {
     
     @Override
     public void resolve() throws ExecutionException, InterruptedException {
-//        x.get();
-//        cF.innerClasses.get();
-
         Queue<Character> q = ClassFile.toQueue(utf.get());
-        sb.append(TYPE_GETTERS.get(q.peek()).apply(cF, q)).append(".class");
+        sb.append(TYPE_GETTERS.get(q.peek()).apply(cF, q));
+        if (sb.indexOf("$") > -1) {
+            sb.setLength(0);
+            sb.append(innerClassInfo.get());
+        }
+        sb.append(".class");
     }
 }
