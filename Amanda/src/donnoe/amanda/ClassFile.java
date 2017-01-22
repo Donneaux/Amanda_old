@@ -6,6 +6,8 @@ import java.util.Map;
 import java.util.concurrent.*;
 import java.util.stream.*;
 import static donnoe.amanda.Amanda.INSTANCE;
+import donnoe.amanda.attributes.BootStrapMethod;
+import donnoe.amanda.attributes.BootStrapMethodsAttribute;
 import donnoe.amanda.attributes.InnerClassInfo;
 import donnoe.amanda.attributes.InnerClassesAttribute;
 import donnoe.amanda.constant.ClassConstant;
@@ -21,6 +23,7 @@ import static donnoe.amanda.constant.Constant.readConstant;
 import donnoe.util.concurrent.Futures;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Collections;
 import static java.util.Collections.unmodifiableMap;
 import java.util.List;
 import static java.util.function.Function.identity;
@@ -93,6 +96,8 @@ public final class ClassFile extends Accessible {
     
     public final Future<Map<String, String>> innerClassNames = Futures.transform(unwrap(transform(innerClasses, m -> transformList(m.keySet().stream().map(this::<ClassConstant>getConstantFuture).collect(toList())))), l -> l.stream().collect(toMap(cc -> cc.oldName, cc -> cc.newName)));
 
+    public final Future<List<BootStrapMethod>> methods = unwrap(transform(getAttributeFuture(BootStrapMethodsAttribute.class) , bSMA -> bSMA != null ? bSMA.methods : Futures.of(Collections.emptyList())));
+    
     public DataInputStream in;
 
     //<editor-fold desc="statics">

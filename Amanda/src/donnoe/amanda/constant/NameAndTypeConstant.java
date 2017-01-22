@@ -12,6 +12,7 @@ import java.util.concurrent.Future;
 public class NameAndTypeConstant extends Constant {
 
     public final Future<String> name;
+    
     public final Future<List<String>> types;
 
     public NameAndTypeConstant(ClassFile cF) {

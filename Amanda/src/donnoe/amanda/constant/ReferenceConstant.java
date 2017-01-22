@@ -21,12 +21,6 @@ public final class ReferenceConstant extends Constant {
 
     @Override
     public void resolve() throws ExecutionException, InterruptedException {
-        try {
-            clazz.get();
-        } catch (InterruptedException x) {
-            System.err.println(nAt.get());
-            x.printStackTrace();
-        }
-        sb.append(clazz.get()).append(' ').append(nAt.get());
+        sb.append(clazz.get()).append('.').append(nAt.get().name.get());
     }
 }
