@@ -18,6 +18,8 @@ import static donnoe.amanda.Amanda.INSTANCE;
 import donnoe.amanda.attributes.BootStrapMethodsAttribute;
 import donnoe.amanda.attributes.ConstantValueAttribute;
 import donnoe.amanda.attributes.ExceptionsAttribute;
+import donnoe.amanda.attributes.SignatureAttribute;
+import donnoe.amanda.attributes.SyntheticAttribute;
 import donnoe.util.TypeSafeHeterogenousContainer;
 import donnoe.util.concurrent.Futures;
 import java.util.Arrays;
@@ -41,7 +43,8 @@ public abstract class Attributable extends Blob {
                             put("Exceptions", ExceptionsAttribute::new);
                             put("BootstrapMethods", BootStrapMethodsAttribute::new);
                             put("ConstantValue", ConstantValueAttribute::new);
-                            
+                            put("Signature", SignatureAttribute::new);
+                            put("Synthetic", SyntheticAttribute::new);
                         }
                     }.entrySet().stream().collect(toMap(
                             Map.Entry::getKey,
