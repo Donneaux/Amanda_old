@@ -6,7 +6,7 @@ import donnoe.amanda.ClassFile;
  *
  * @author joshuadonnoe
  */
-public final class UTFConstant extends Constant {
+public final class UTFConstant extends Constant implements ValueConstant {
 
     public UTFConstant(ClassFile cF) {
         super(cF);

@@ -7,7 +7,7 @@ import java.util.concurrent.Future;
  *
  * @author joshuadonnoe
  */
-public abstract class UTFBasedConstant extends Constant {
+public abstract class UTFBasedConstant extends Constant implements LoadableConstant {
 
     protected final Future<String> utf;
 

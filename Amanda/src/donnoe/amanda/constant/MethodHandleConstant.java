@@ -13,7 +13,7 @@ import java.util.concurrent.Future;
 /**
  * @author joshuadonnoe
  */
-public final class MethodHandleConstant extends Constant {
+public final class MethodHandleConstant extends Constant implements LoadableConstant {
 
     private static final Map<Integer, String> KINDS = unmodifiableMap(new HashMap<Integer, String>(){
         {

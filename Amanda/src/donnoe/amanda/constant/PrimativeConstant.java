@@ -9,7 +9,7 @@ import static java.lang.Double.*;
  *
  * @author joshuadonnoe
  */
-public class PrimativeConstant extends Constant {
+public class PrimativeConstant extends Constant implements CompileTimeConstant, ValueConstant {
 
     protected PrimativeConstant(ClassFile cF, String s) {
         super(cF);
