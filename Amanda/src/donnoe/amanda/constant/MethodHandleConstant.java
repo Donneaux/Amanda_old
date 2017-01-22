@@ -18,10 +18,10 @@ public final class MethodHandleConstant extends Constant implements LoadableCons
     private static final Map<Integer, String> KINDS = unmodifiableMap(new HashMap<Integer, String>(){
         {
             putAll(of(5, 9).collect(toMap(identity(), i -> "Virtual")));
-            put(1, "Getter");
-            put(2, "StaticGetter");
-            put(3, "Setter");
-            put(4, "StaticSetter");
+            put(1, "Getter");//field
+            put(2, "StaticGetter");//field
+            put(3, "Setter");//field
+            put(4, "StaticSetter");//field
             put(6, "Static");
             put(7, "Special");
             put(8, "Constructor");

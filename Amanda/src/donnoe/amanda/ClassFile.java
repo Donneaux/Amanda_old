@@ -25,6 +25,7 @@ import static java.util.Collections.unmodifiableMap;
 import java.util.List;
 import static java.util.function.Function.identity;
 import static java.util.stream.Stream.of;
+import static java.util.Map.Entry;
 
 /**
  *
@@ -243,7 +244,9 @@ public final class ClassFile extends Accessible {
 
     @Override
     public void resolve() throws ExecutionException, InterruptedException {
-        sb.append(Futures.transformMapWithKnownKeys(constantFutures).get());
-        sb.append(innerClassNames.get());
+        sb.append(
+        Futures.transformMapWithKnownKeys(constantFutures).get().entrySet().stream().map(Entry::toString).collect(joining("\n")));
+//        sb.append(Futures.transformMapWithKnownKeys(constantFutures).get());
+//        sb.append(innerClassNames.get());
     }
 }
