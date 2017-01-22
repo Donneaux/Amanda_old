@@ -22,6 +22,9 @@ import java.util.concurrent.TimeoutException;
 public final class ClassConstant extends UTFBasedConstant {
 
     private final Future<InnerClassInfo> innerClassInfo;
+    
+    public String oldName, newName;
+    
     public ClassConstant(ClassFile cF, int index) {
         super(cF);
         innerClassInfo = Futures.unwrap(Futures.getOrDefaultFromMapFuture(cF.innerClasses, index, Futures.of(null)));
@@ -33,7 +36,7 @@ public final class ClassConstant extends UTFBasedConstant {
                             new HashMap<Character, BiFunction<ClassFile, Queue<Character>, String>>() {{
                                 put('[', ClassFile::getType);
                             }},
-                            ClassFile::getClassType
+                            ClassFile::getClassTypeHelper
                     )
             );
     
@@ -42,8 +45,11 @@ public final class ClassConstant extends UTFBasedConstant {
         Queue<Character> q = ClassFile.toQueue(utf.get());
         sb.append(TYPE_GETTERS.get(q.peek()).apply(cF, q));
         if (sb.indexOf("$") > -1) {
+            InnerClassInfo iCI = innerClassInfo.get();
+            newName = iCI.toString();
+            oldName = sb.toString();
             sb.setLength(0);
-            sb.append(innerClassInfo.get());
+            sb.append(newName);
         }
         sb.append(".class");
     }

@@ -26,7 +26,7 @@ public abstract class Blob {
         this.cF = cF;
     }
 
-    protected ClassFile cF;
+    public ClassFile cF;
     
     protected final DataInputStream dis() {
         return cF.in;
