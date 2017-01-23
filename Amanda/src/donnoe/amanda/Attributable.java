@@ -20,9 +20,9 @@ import donnoe.amanda.attributes.ConstantValueAttribute;
 import donnoe.amanda.attributes.ExceptionsAttribute;
 import donnoe.amanda.attributes.SignatureAttribute;
 import donnoe.amanda.attributes.SyntheticAttribute;
+import donnoe.amanda.attributes.annotation.AccessibleAnnotationsAttribute;
 import donnoe.util.TypeSafeHeterogenousContainer;
 import donnoe.util.concurrent.Futures;
-import java.util.Arrays;
 import static java.util.Arrays.asList;
 import static java.util.Map.Entry;
 import java.util.concurrent.ArrayBlockingQueue;
@@ -38,13 +38,15 @@ public abstract class Attributable extends Blob {
             new DefaultMap<String, BiFunction<ClassFile, String, Attribute>>(
                     new HashMap<String, Function<ClassFile, Attribute>>() {
                         {
-                            putAll(of("SourceFile").collect(toMap(s -> s, s -> IgnoredAttribute::new)));
+                            putAll(of("SourceFile", "Deprecated").collect(toMap(s -> s, s -> IgnoredAttribute::new)));
                             put("InnerClasses", InnerClassesAttribute::new);
                             put("Exceptions", ExceptionsAttribute::new);
                             put("BootstrapMethods", BootStrapMethodsAttribute::new);
                             put("ConstantValue", ConstantValueAttribute::new);
                             put("Signature", SignatureAttribute::new);
                             put("Synthetic", SyntheticAttribute::new);
+                            put("RuntimeVisibleAnnotations", AccessibleAnnotationsAttribute::new);
+                            
                         }
                     }.entrySet().stream().collect(toMap(
                             Map.Entry::getKey,

@@ -113,6 +113,10 @@ public abstract class Blob {
                 elementCount
         );
     }
+    
+    public String readBooleanValue() {
+        return donnoe.amanda.accessibles.ValueVisitor.visit("boolean", readString());
+    }
     //</editor-fold>
 
     protected final StringBuilder sb = new StringBuilder();
