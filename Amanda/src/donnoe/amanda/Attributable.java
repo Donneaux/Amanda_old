@@ -46,6 +46,7 @@ public abstract class Attributable extends Blob {
                             put("Signature", SignatureAttribute::new);
                             put("Synthetic", SyntheticAttribute::new);
                             put("RuntimeVisibleAnnotations", AccessibleAnnotationsAttribute::new);
+                            put("AnnotationDefault", AccessibleAnnotationsAttribute::new);
                             
                         }
                     }.entrySet().stream().collect(toMap(
