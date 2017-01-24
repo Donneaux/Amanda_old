@@ -10,8 +10,6 @@ import java.util.concurrent.Future;
  */
 public class Member extends Accessible {
 
-    
-    
     public Member(ClassFile cF) {
         super(cF);
         access = cF.readUnsignedShort();
@@ -24,5 +22,5 @@ public class Member extends Accessible {
     public void resolve() throws ExecutionException, InterruptedException {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-    
+
 }

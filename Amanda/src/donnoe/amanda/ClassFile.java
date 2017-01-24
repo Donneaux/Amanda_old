@@ -1,34 +1,21 @@
 package donnoe.amanda;
 
-import donnoe.amanda.constant.TwoWordPrimativeConstant;
-import java.io.*;
-import java.util.Map;
-import java.util.concurrent.*;
-import java.util.stream.*;
 import static donnoe.amanda.Amanda.INSTANCE;
-import donnoe.amanda.attributes.BootStrapMethod;
-import donnoe.amanda.attributes.BootStrapMethodsAttribute;
-import donnoe.amanda.attributes.InnerClassInfo;
-import donnoe.amanda.attributes.InnerClassesAttribute;
-import donnoe.amanda.constant.ClassConstant;
-import donnoe.amanda.constant.Constant;
-import static donnoe.util.concurrent.Futures.*;
+import donnoe.amanda.attributes.*;
+import donnoe.amanda.constant.*;
+import static donnoe.amanda.constant.Constant.*;
 import donnoe.util.LookupMap;
+import static donnoe.util.concurrent.Futures.*;
+import java.io.*;
 import static java.lang.String.*;
-import java.util.HashMap;
-import java.util.Queue;
-import java.util.function.BiFunction;
-import static java.util.stream.Collectors.*;
-import static donnoe.amanda.constant.Constant.readConstant;
-import donnoe.util.concurrent.Futures;
-import java.util.ArrayDeque;
-import java.util.ArrayList;
-import java.util.Collections;
+import java.util.*;
 import static java.util.Collections.unmodifiableMap;
-import java.util.List;
+import java.util.Map.Entry;
+import java.util.concurrent.*;
+import java.util.function.BiFunction;
 import static java.util.function.Function.identity;
-import static java.util.stream.Stream.of;
-import static java.util.Map.Entry;
+import java.util.stream.*;
+import static java.util.stream.Collectors.*;
 
 /**
  *
@@ -47,15 +34,15 @@ public final class ClassFile extends Accessible {
         INSTANCE.println(String.format("0x%X%n%3$s.%s", readInt(), readUnsignedShort(), readUnsignedShort()));
         Map<Integer, BlockingQueue<Future<Constant>>> qs = IntStream.range(1, readUnsignedShort()).boxed().collect(toMap(i -> i, i -> new ArrayBlockingQueue<>(1)));
         constantFutures = qs.entrySet().stream().collect(toMap(
-                Map.Entry::getKey,
-                e -> Amanda.INSTANCE.exec.submit(() -> e.getValue().take().get())
+                Entry::getKey,
+                e -> INSTANCE.exec.submit(() -> e.getValue().take().get())
         ));
-        constantFutures.put(0, Amanda.INSTANCE.queueForResolution(new Constant(this) {
+        //this is a 
+        constantFutures.put(0, INSTANCE.queueForResolution(new Constant(this) {
             @Override
             public void resolve() throws ExecutionException, InterruptedException {
                 sb.append("NULL");
             }
-
         }));
         stringFutures = new LookupMap<>(i -> transform(constantFutures.get(i), Object::toString));
         strings = new LookupMap<>(i -> getNow(stringFutures.get(i)));
@@ -92,12 +79,12 @@ public final class ClassFile extends Accessible {
     protected Map<Integer, Future<String>> shortStringFutures;
     //</editor-fold>
 
-    public final Future<Map<Integer, Future<InnerClassInfo>>> innerClasses = Futures.transform(getAttributeFuture(InnerClassesAttribute.class), iC -> iC.innerClasses);
-    
-    public final Future<Map<String, String>> innerClassNames = Futures.transform(unwrap(transform(innerClasses, m -> transformList(m.keySet().stream().map(this::<ClassConstant>getConstantFuture).collect(toList())))), l -> l.stream().collect(toMap(cc -> cc.oldName, cc -> cc.newName)));
+    public final Future<Map<Integer, Future<InnerClassInfo>>> innerClasses = transform(getAttributeFuture(InnerClassesAttribute.class), iC -> iC.innerClasses);
 
-    public final Future<List<BootStrapMethod>> methods = unwrap(transform(getAttributeFuture(BootStrapMethodsAttribute.class) , bSMA -> bSMA != null ? bSMA.methods : Futures.of(Collections.emptyList())));
-    
+    public final Future<Map<String, String>> innerClassNames = transform(unwrap(transform(innerClasses, m -> transformList(m.keySet().stream().map(this::<ClassConstant>getConstantFuture).collect(toList())))), l -> l.stream().collect(toMap(cc -> cc.oldName, cc -> cc.newName)));
+
+    public final Future<List<BootStrapMethod>> methods = unwrap(transform(getAttributeFuture(BootStrapMethodsAttribute.class), bSMA -> bSMA != null ? bSMA.methods : of(Collections.emptyList())));
+
     public DataInputStream in;
 
     //<editor-fold desc="statics">
@@ -129,14 +116,14 @@ public final class ClassFile extends Accessible {
                     put('D', "double");
                     put('*', "?");
                 }
-            }.entrySet().stream().collect(toMap(Map.Entry::getKey, e -> (cF, q) -> e.getValue())));
+            }.entrySet().stream().collect(toMap(Entry::getKey, e -> (cF, q) -> e.getValue())));
             putAll(new HashMap<Character, String>() {
                 {
                     put('+', "extends");
                     put('-', "super");
                 }
-            }.entrySet().stream().collect(toMap(Map.Entry::getKey, e -> (cF, q) -> "? " + e.getValue() + ' ' + cF.getType(q))));
-            putAll(of('(', ')').collect(toMap(identity(), s -> ClassFile::getType)));
+            }.entrySet().stream().collect(toMap(Entry::getKey, e -> (cF, q) -> "? " + e.getValue() + ' ' + cF.getType(q))));
+            putAll(Stream.of('(', ')').collect(toMap(identity(), s -> ClassFile::getType)));
             put('L', ClassFile::getClassType);
             put('T', ClassFile::getFormalType);
             put('[', ClassFile::getArrayType);
@@ -196,10 +183,9 @@ public final class ClassFile extends Accessible {
             q.remove();
         }
         return clazz.toString();
-        
+
     }
-    
-    
+
     public String getClassTypeHelper(Queue<Character> q) {
         StringBuilder clazz = new StringBuilder();
         //so this loop can terminate in three ways
@@ -249,8 +235,7 @@ public final class ClassFile extends Accessible {
 
     @Override
     public void resolve() throws ExecutionException, InterruptedException {
-        sb.append(
-        Futures.transformMapWithKnownKeys(constantFutures).get().entrySet().stream().map(Entry::toString).collect(joining("\n")));
+        sb.append(transformMapWithKnownKeys(constantFutures).get().entrySet().stream().map(Entry::toString).collect(joining("\n")));
 //        sb.append(Futures.transformMapWithKnownKeys(constantFutures).get());
 //        sb.append(innerClassNames.get());
     }

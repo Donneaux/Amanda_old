@@ -1,63 +1,51 @@
-package donnoe.amanda.accessibles;
+package donnoe.amanda;
 
-import donnoe.amanda.ClassFile;
+import static donnoe.amanda.ClassFile.escapeCharacter;
 import donnoe.util.DefaultMap;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import static java.lang.Integer.parseInt;
+import java.util.*;
+import static java.util.Collections.unmodifiableMap;
 
 /**
  *
  * @author joshuadonnoe
  */
-public enum ValueVisitor {
+public enum ValuePrinter {
 
-    /**
-     *
-     */
     BOOLEAN {
 
         @Override
         public String visit(Object value) {
             return String.valueOf(value.toString().equals("1"));
         }
-        
-    },
 
-    /**
-     *
-     */
+    },
     STANDARD {
 
         @Override
         public String visit(Object value) {
             return value.toString();
         }
-    
-    },
 
-    /**
-     *
-     */
+    },
     CHARACTER {
 
         @Override
         public String visit(Object value) {
-            return "'" + ClassFile.escapeCharacter((char) Integer.parseInt(value.toString())) + "'";
+            return "'" + escapeCharacter((char) parseInt(value.toString())) + "'";
         }
-        
+
     };
 
-    /**
-     *
-     */
-    private static final Map<String, ValueVisitor> VISITORS = Collections.unmodifiableMap(
-            new DefaultMap<String, ValueVisitor>(new HashMap<String, ValueVisitor>(){{
-                put("char", CHARACTER);
-                put("boolean", BOOLEAN);
-                        
-            }}, STANDARD)
+    private static final Map<String, ValuePrinter> VISITORS = unmodifiableMap(new DefaultMap<String, ValuePrinter>(new HashMap<String, ValuePrinter>() {
+        {
+            put("char", CHARACTER);
+            put("boolean", BOOLEAN);
+
+        }
+    }, STANDARD)
     );
+
     /**
      *
      * @param type

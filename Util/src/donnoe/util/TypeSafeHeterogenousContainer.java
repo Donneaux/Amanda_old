@@ -3,8 +3,9 @@ package donnoe.util;
 import java.util.Map;
 import static java.util.Collections.*;
 import java.util.List;
-import java.util.stream.Stream;
+import static java.util.stream.Stream.of;
 import static java.util.stream.Collectors.toList;
+
 /**
  *
  * @author joshuadonnoe
@@ -19,7 +20,7 @@ public class TypeSafeHeterogenousContainer<S> {
     
     public final <S2 extends S> List<S> put(S2 value) {
         Class<S2> clazz = (Class) value.getClass();
-        return map.merge(clazz, singletonList(value), (s1, s2) -> Stream.concat(s1.stream(), s2.stream()).collect(toList()));
+        return map.merge(clazz, singletonList(value), (s1, s2) -> of(s1, s2).flatMap(List::stream).collect(toList()));
     }
     
     public final <S2 extends S> List<S2> get(Class<S2> clazz) {

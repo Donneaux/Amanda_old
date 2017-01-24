@@ -9,10 +9,9 @@ import java.util.concurrent.Future;
  */
 public abstract class UTFBasedConstant extends Constant implements LoadableConstant {
 
-    protected final Future<String> utf;
+    protected final Future<String> utf = cF.readStringFuture();;
 
     public UTFBasedConstant(ClassFile cF) {
         super(cF);
-        utf = cF.readStringFuture();
     }
 }

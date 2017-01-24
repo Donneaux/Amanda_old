@@ -12,6 +12,7 @@ import java.util.concurrent.TimeoutException;
 /**
  *
  * @author joshuadonnoe
+ * @param <T>
  */
 public class UnwrappingFuture<T> extends ForwardingFuture<T> {
 

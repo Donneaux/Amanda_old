@@ -1,21 +1,15 @@
 package donnoe.util.concurrent;
 
-import static donnoe.util.concurrent.ValueStatus.KNOWN;
-import static donnoe.util.concurrent.ValueStatus.PENDING;
+import static donnoe.util.concurrent.ValueStatus.*;
 import static java.lang.System.currentTimeMillis;
 import static java.util.Comparator.naturalOrder;
-import java.util.concurrent.CompletionException;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
-import java.util.concurrent.TimeoutException;
-import java.util.function.Function;
-import java.util.function.Supplier;
+import java.util.function.*;
+import static java.util.function.Function.identity;
 import java.util.stream.Collector;
 import static java.util.stream.Collectors.reducing;
 import java.util.stream.Stream;
-import static java.util.function.Function.identity;
 
 /**
  *
@@ -45,7 +39,8 @@ public final class AccumulatingFuture<T, TT, R> implements Future<R> {
     private final Collector<TT, ?, R> collector;
 
     /**
-     * When T is a composed of just single future (itself), we use the TT futures as the flat stream
+     * When T is a composed of just single future (itself), we use the TT
+     * futures as the flat stream
      *
      * @param streamSupplier
      * @param map
@@ -57,10 +52,12 @@ public final class AccumulatingFuture<T, TT, R> implements Future<R> {
 
     /**
      *
-     * @param streamSupplier    a stream of objects
-     * @param flatMap           turns an object into a stream of futures that it depends on
-     * @param map               turns an object into a future (probably using the futures from flat)
-     * @param collector         accumulates the futures' objects into a single object
+     * @param streamSupplier a stream of objects
+     * @param flatMap turns an object into a stream of futures that it depends
+     * on
+     * @param map turns an object into a future (probably using the futures from
+     * flat)
+     * @param collector accumulates the futures' objects into a single object
      */
     public AccumulatingFuture(Supplier<Stream<T>> streamSupplier, Function<T, Stream<Future<?>>> flatMap, Function<T, Future<TT>> map, Collector<TT, ?, R> collector) {
         this.streamSupplier = streamSupplier;
@@ -70,7 +67,7 @@ public final class AccumulatingFuture<T, TT, R> implements Future<R> {
     }
 
     /**
-     * 
+     *
      * @return all the futures needed to examine state
      */
     private Stream<Future<?>> flatStream() {
@@ -82,12 +79,12 @@ public final class AccumulatingFuture<T, TT, R> implements Future<R> {
     }
 
     /**
-     * Complying with the general contract, this will return true if something was
-     * not already done and therefore was cancelled.
+     * Complying with the general contract, this will return true if something
+     * was not already done and therefore was cancelled.
+     *
      * @param mayInterruptIfRunning
-     * @return 
+     * @return
      */
-    
     @Override
     public boolean cancel(boolean mayInterruptIfRunning) {
         return flatStream()
@@ -96,8 +93,9 @@ public final class AccumulatingFuture<T, TT, R> implements Future<R> {
     }
 
     /**
-     * if (anything will throw or is cancelled) or (everything has a value) 
-     * @return 
+     * if (anything will throw or is cancelled) or (everything has a value)
+     *
+     * @return
      */
     @Override
     public boolean isDone() {
@@ -109,17 +107,16 @@ public final class AccumulatingFuture<T, TT, R> implements Future<R> {
         //the max is pending -> nothing is DNE
     }
 
-    
     /**
      * im not super happy with this method
-     * 
-     * 
+     *
+     *
      * @return
      * @throws ExecutionException
-     * @throws InterruptedException 
+     * @throws InterruptedException
      */
     @Override
-    public R get() throws ExecutionException, InterruptedException{
+    public R get() throws ExecutionException, InterruptedException {
         //this is the only gaurenteed way
         Exception[] p = new Exception[1];
         try {
@@ -139,6 +136,8 @@ public final class AccumulatingFuture<T, TT, R> implements Future<R> {
             } catch (ExecutionException | InterruptedException x2) {
                 throw x2;
             } catch (Throwable t) {
+                //this happens if "f.get()" throws its own completionException
+                //the correct behavior would be to throw it
                 throw x;
             }
         }

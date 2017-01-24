@@ -12,11 +12,10 @@ import static java.util.stream.Collectors.joining;
  */
 public final class MethodTypeConstant extends Constant {
 
-    private final Future<List<String>> typesFuture;
+    private final Future<List<String>> typesFuture = cF.readTypesFuture();
     
     public MethodTypeConstant(ClassFile cF) {
         super(cF);
-        typesFuture = cF.readTypesFuture();
     }
 
     @Override

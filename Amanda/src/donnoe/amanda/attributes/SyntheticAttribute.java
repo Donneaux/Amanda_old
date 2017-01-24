@@ -20,6 +20,5 @@ public final class SyntheticAttribute extends RecognizedAttribute {
     @Override
     public void resolve() throws ExecutionException, InterruptedException {
     }
-    
-    
+
 }

@@ -8,6 +8,7 @@ import java.util.concurrent.TimeoutException;
 /**
  *
  * @author joshuadonnoe
+ * @param <T>
  */
 public final class FutureOf<T> implements Future<T> {
 

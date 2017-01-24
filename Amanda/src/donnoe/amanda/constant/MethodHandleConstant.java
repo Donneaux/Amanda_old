@@ -1,7 +1,6 @@
 package donnoe.amanda.constant;
 
 import donnoe.amanda.ClassFile;
-import java.lang.invoke.LambdaConversionException;
 import java.util.Map;
 import static java.util.stream.Stream.*;
 import static java.util.stream.Collectors.*;
@@ -10,6 +9,7 @@ import static java.util.Collections.unmodifiableMap;
 import java.util.HashMap;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
+import static donnoe.amanda.constant.MethodTypeConstant.asLiteral;
 
 /**
  * @author joshuadonnoe
@@ -39,8 +39,8 @@ public final class MethodHandleConstant extends Constant implements LoadableCons
 
     @Override
     public void resolve() throws ExecutionException, InterruptedException {
-        sb.append(method.get().clazz.get()).append(".class,\n");
-        sb.append('"').append(method.get().nAt.get().name.get()).append("\",\n");
-        sb.append(MethodTypeConstant.asLiteral(method.get().nAt.get().types.get())).append("\n)");
+        sb.append(method.get().clazz.get()).append(".class,\n").
+                append('"').append(method.get().nAt.get().name.get()).append("\",\n").
+                append(asLiteral(method.get().nAt.get().types.get())).append("\n)");
     }
 }

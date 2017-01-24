@@ -12,7 +12,7 @@ import java.util.concurrent.Future;
  */
 public final class AccessibleAnnotationsAttribute extends RecognizedAttribute {
 
-    private final Future<Annotations> annotations;
+    private final Future<Annotations> annotations = INSTANCE.queueForResolution(new Annotations(cF));
 
     /**
      *
@@ -20,7 +20,6 @@ public final class AccessibleAnnotationsAttribute extends RecognizedAttribute {
      */
     public AccessibleAnnotationsAttribute(ClassFile cF) {
         super(cF);
-        annotations = INSTANCE.queueForResolution(new Annotations(cF));
     }
 
     /**

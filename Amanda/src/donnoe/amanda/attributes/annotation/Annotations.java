@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
  */
 public final class Annotations extends Blob {
 
-    private final Future<List<Annotation>> annotations;
+    private final Future<List<Annotation>> annotations = readItemFutureList(() -> new Annotation(cF), readUnsignedShort());
     
     /**
      *
@@ -21,7 +21,6 @@ public final class Annotations extends Blob {
      */
     public Annotations(ClassFile cF) {
         super(cF);
-        annotations = readItemFutureList(() -> new Annotation(cF), readUnsignedShort());
     }
     
     @Override

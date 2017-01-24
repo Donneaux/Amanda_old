@@ -2,6 +2,7 @@ package donnoe.amanda.attributes;
 
 import donnoe.amanda.Amanda;
 import donnoe.amanda.ClassFile;
+
 /**
  *
  * @author joshuadonnoe
@@ -12,5 +13,5 @@ public class UnrecognizedAttribute extends IgnoredAttribute {
         super(cF);
         Amanda.INSTANCE.println(name);
     }
-    
+
 }

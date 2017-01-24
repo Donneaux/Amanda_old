@@ -12,5 +12,5 @@ public abstract class Attribute extends Blob {
     public Attribute(ClassFile cF) {
         super(cF);
     }
-    
+
 }

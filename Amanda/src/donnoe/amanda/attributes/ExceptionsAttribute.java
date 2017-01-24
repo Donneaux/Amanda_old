@@ -10,15 +10,15 @@ import java.util.concurrent.Future;
  * @author joshuadonnoe
  */
 public final class ExceptionsAttribute extends RecognizedAttribute {
-    private final Future<List<String>> EXCEPTIONS;
-    
+
+    private final Future<List<String>> EXCEPTIONS = cF.readShortStringsListFuture();
+
     /**
      *
      * @param cF
      */
     public ExceptionsAttribute(ClassFile cF) {
         super(cF);
-        EXCEPTIONS = cF.readShortStringsListFuture();
     }
 
     @Override

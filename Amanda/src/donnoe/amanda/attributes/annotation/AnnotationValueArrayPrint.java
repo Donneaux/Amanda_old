@@ -22,24 +22,16 @@ public enum AnnotationValueArrayPrint {
         public String visit(List<AnnotationValue> l) throws ExecutionException, InterruptedException {
             return "{}";
         }
-        
-    },
 
-    /**
-     *
-     */
+    },
     SINGLE {
 
         @Override
         public String visit(List<AnnotationValue> l) throws ExecutionException, InterruptedException {
             return l.get(0).toString();
         }
-        
-    },
 
-    /**
-     *
-     */
+    },
     GENERAL {
         @Override
         public String visit(List<AnnotationValue> l) throws ExecutionException, InterruptedException {
@@ -47,6 +39,20 @@ public enum AnnotationValueArrayPrint {
         }
     };
 
+    private static final Map<Integer, AnnotationValueArrayPrint> VISITORS = new DefaultMap<>(
+            new HashMap<Integer, AnnotationValueArrayPrint>() {
+        {
+            put(0, EMPTY);
+            put(1, SINGLE);
+        }
+    },
+            GENERAL
+    );
+
+    public static String print(AnnotationValueArray a) throws ExecutionException, InterruptedException {
+        List<AnnotationValue> values = a.values.get();
+        return VISITORS.get(values.size()).visit(values);
+    }
     /**
      *
      * @param l
@@ -55,17 +61,4 @@ public enum AnnotationValueArrayPrint {
      * @throws InterruptedException
      */
     public abstract String visit(List<AnnotationValue> l) throws ExecutionException, InterruptedException;
-    
-    private static final Map<Integer, AnnotationValueArrayPrint> VISITORS = new DefaultMap<>(
-            new HashMap<Integer, AnnotationValueArrayPrint>() {{
-                put(0, EMPTY);
-                put(1, SINGLE);
-            }},
-            GENERAL
-    );
-    
-    public static String print(AnnotationValueArray a) throws ExecutionException, InterruptedException {
-        List<AnnotationValue> values = a.values.get();
-        return VISITORS.get(values.size()).visit(values);
-    }
 }

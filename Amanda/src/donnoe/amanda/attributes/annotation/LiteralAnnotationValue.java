@@ -1,7 +1,7 @@
 package donnoe.amanda.attributes.annotation;
 
 import donnoe.amanda.ClassFile;
-import donnoe.amanda.accessibles.ValueVisitor;
+import donnoe.amanda.ValuePrinter;
 import java.util.concurrent.ExecutionException;
 import java.util.function.Function;
 
@@ -21,11 +21,11 @@ public final class LiteralAnnotationValue extends AnnotationValue {
     }
     
     public static LiteralAnnotationValue readCharacterAnnotationValue(ClassFile cF) {
-        return new LiteralAnnotationValue(cF, ValueVisitor.CHARACTER::visit);
+        return new LiteralAnnotationValue(cF, ValuePrinter.CHARACTER::visit);
     }
     
     public static LiteralAnnotationValue readBooleanAnnotationValue(ClassFile cF) {
-        return new LiteralAnnotationValue(cF, ValueVisitor.BOOLEAN::visit);
+        return new LiteralAnnotationValue(cF, ValuePrinter.BOOLEAN::visit);
     }
     
     public static LiteralAnnotationValue readStringAnnotationValue(ClassFile cF) {

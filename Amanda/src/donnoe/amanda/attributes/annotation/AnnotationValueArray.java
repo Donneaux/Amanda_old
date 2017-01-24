@@ -4,7 +4,7 @@ import donnoe.amanda.ClassFile;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
-//import static donnoe.amanda.attributes.annotations.AnnotationValueArrayVisitor.select;
+import static donnoe.amanda.attributes.annotation.AnnotationValue.*;
 
 /**
  *
@@ -12,7 +12,7 @@ import java.util.concurrent.Future;
  */
 public final class AnnotationValueArray extends AnnotationValue {
 
-    final Future<List<AnnotationValue>> values;
+    public final Future<List<AnnotationValue>> values = readItemFutureList(() -> readAnnotationValue(cF), readUnsignedShort());
     
     /**
      *
@@ -20,7 +20,6 @@ public final class AnnotationValueArray extends AnnotationValue {
      */
     public AnnotationValueArray(ClassFile cF) {
         super(cF);
-        values = readItemFutureList(() -> AnnotationValue.readAnnotationValue(cF), readUnsignedShort());
     }
 
     @Override

@@ -11,22 +11,18 @@ import java.util.concurrent.Future;
  */
 public final class BootStrapMethodsAttribute extends RecognizedAttribute {
 
-    /**
-     *
-     */
-    public final Future<List<BootStrapMethod>> methods;
-    
+    public final Future<List<BootStrapMethod>> methods = cF.readItemFutureList(() -> new BootStrapMethod(cF), readUnsignedShort());
+
     /**
      *
      * @param cF
      */
     public BootStrapMethodsAttribute(ClassFile cF) {
         super(cF);
-        methods = cF.readItemFutureList(() -> new BootStrapMethod(cF), readUnsignedShort());
     }
 
     @Override
-    public void resolve() throws ExecutionException, InterruptedException {}
-    
-    
+    public void resolve() throws ExecutionException, InterruptedException {
+    }
+
 }

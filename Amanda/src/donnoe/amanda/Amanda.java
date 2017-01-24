@@ -1,10 +1,9 @@
 package donnoe.amanda;
 
 import java.io.*;
-import java.util.concurrent.*;
 import static java.lang.System.*;
+import java.util.concurrent.*;
 import static java.util.concurrent.Executors.newCachedThreadPool;
-import java.util.function.Function;
 
 /**
  *
@@ -13,12 +12,8 @@ import java.util.function.Function;
 public enum Amanda {
     INSTANCE;
 
-    public final ExecutorService exec = newCachedThreadPool();
-
     private static PrintStream stream;
 
-    private static Function<Object, Object> f = i -> i;
-    
     public static void main(String[] args) {
         try {
             INSTANCE.setStream(args.length > 1);
@@ -27,9 +22,10 @@ public enum Amanda {
             INSTANCE.exec.shutdownNow();
         }
     }
-    
+    public final ExecutorService exec = newCachedThreadPool();
+
     public void setStream(boolean verbose) {
-            stream = verbose
+        stream = verbose
                 ? err
                 : new PrintStream(new OutputStream() {
                     @Override
@@ -37,12 +33,11 @@ public enum Amanda {
                     }
                 });
     }
-    
+
     public String decompile(String clazz) {
         try {
             return queueForResolution(new ClassFile(clazz)).get().toString();
         } catch (ExecutionException | InterruptedException x) {
-//            x.printStackTrace(stream);
             throw new IllegalStateException("Decompilation failed");
         }
     }

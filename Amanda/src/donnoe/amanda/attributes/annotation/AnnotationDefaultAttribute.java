@@ -13,15 +13,14 @@ import java.util.concurrent.Future;
  */
 public final class AnnotationDefaultAttribute extends RecognizedAttribute {
 
-    private final Future<AnnotationValue> value;
-    
+    private final Future<AnnotationValue> value = INSTANCE.queueForResolution(readAnnotationValue(cF));
+   
     /**
      *
      * @param cF
      */
     public AnnotationDefaultAttribute(final ClassFile cF) {
         super(cF);
-        value = INSTANCE.queueForResolution(readAnnotationValue(cF));
     }
 
     @Override

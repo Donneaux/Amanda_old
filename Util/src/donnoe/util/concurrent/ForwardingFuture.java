@@ -5,6 +5,7 @@ import java.util.concurrent.Future;
 /**
  *
  * @author joshuadonnoe
+ * @param <V>
  */
 public abstract class ForwardingFuture<V> implements Future<V> {
 
