@@ -1,4 +1,4 @@
-package donnoe.amanda.attributes.annotation;
+package donnoe.amanda.attribute.annotation;
 
 import donnoe.util.DefaultMap;
 import java.util.HashMap;

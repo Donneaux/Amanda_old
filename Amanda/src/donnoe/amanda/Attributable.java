@@ -1,8 +1,17 @@
 package donnoe.amanda;
 
+import donnoe.amanda.attribute.annotation.AnnotationDefaultAttribute;
+import donnoe.amanda.attribute.ExceptionsAttribute;
+import donnoe.amanda.attribute.InnerClassesAttribute;
+import donnoe.amanda.attribute.SyntheticAttribute;
+import donnoe.amanda.attribute.IgnoredAttribute;
+import donnoe.amanda.attribute.annotation.AccessibleAnnotationsAttribute;
+import donnoe.amanda.attribute.SignatureAttribute;
+import donnoe.amanda.attribute.BootStrapMethodsAttribute;
+import donnoe.amanda.attribute.UnrecognizedAttribute;
+import donnoe.amanda.attribute.ConstantValueAttribute;
+import donnoe.amanda.attribute.Attribute;
 import static donnoe.amanda.Amanda.INSTANCE;
-import donnoe.amanda.attributes.*;
-import donnoe.amanda.attributes.annotation.*;
 import donnoe.util.DefaultMap;
 import donnoe.util.TypeSafeHeterogenousContainer;
 import donnoe.util.concurrent.Futures;

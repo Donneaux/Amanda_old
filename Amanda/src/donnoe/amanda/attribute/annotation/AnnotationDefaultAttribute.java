@@ -1,9 +1,9 @@
-package donnoe.amanda.attributes.annotation;
+package donnoe.amanda.attribute.annotation;
 
 import static donnoe.amanda.Amanda.INSTANCE;
 import donnoe.amanda.ClassFile;
-import donnoe.amanda.attributes.RecognizedAttribute;
-import static donnoe.amanda.attributes.annotation.AnnotationValue.readAnnotationValue;
+import donnoe.amanda.attribute.RecognizedAttribute;
+import static donnoe.amanda.attribute.annotation.AnnotationValue.readAnnotationValue;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 

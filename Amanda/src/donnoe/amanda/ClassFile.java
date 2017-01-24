@@ -1,7 +1,10 @@
 package donnoe.amanda;
 
+import donnoe.amanda.attribute.BootStrapMethod;
+import donnoe.amanda.attribute.InnerClassesAttribute;
+import donnoe.amanda.attribute.InnerClassInfo;
+import donnoe.amanda.attribute.BootStrapMethodsAttribute;
 import static donnoe.amanda.Amanda.INSTANCE;
-import donnoe.amanda.attributes.*;
 import donnoe.amanda.constant.*;
 import static donnoe.amanda.constant.Constant.*;
 import donnoe.util.LookupMap;

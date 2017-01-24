@@ -1,7 +1,7 @@
 package donnoe.amanda.constant;
 
 import donnoe.amanda.ClassFile;
-import donnoe.amanda.attributes.InnerClassInfo;
+import donnoe.amanda.attribute.InnerClassInfo;
 import donnoe.util.DefaultMap;
 import donnoe.util.concurrent.Futures;
 import static java.util.Collections.*;

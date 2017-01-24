@@ -1,9 +1,9 @@
-package donnoe.amanda.attributes.annotation;
+package donnoe.amanda.attribute.annotation;
 
 import static donnoe.amanda.Amanda.INSTANCE;
 import donnoe.amanda.ClassFile;
-import static donnoe.amanda.attributes.annotation.AnnotationPrinter.print;
-import static donnoe.amanda.attributes.annotation.AnnotationValue.readAnnotationValue;
+import static donnoe.amanda.attribute.annotation.AnnotationPrinter.print;
+import static donnoe.amanda.attribute.annotation.AnnotationValue.readAnnotationValue;
 import donnoe.util.concurrent.Futures;
 import static donnoe.util.concurrent.Futures.transformMapWithKnownKeys;
 import java.util.Map;

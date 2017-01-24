@@ -1,4 +1,4 @@
-package donnoe.amanda.attributes.annotation;
+package donnoe.amanda.attribute.annotation;
 
 import donnoe.amanda.Blob;
 import donnoe.amanda.ClassFile;

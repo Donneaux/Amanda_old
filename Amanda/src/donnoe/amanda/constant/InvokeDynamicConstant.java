@@ -1,7 +1,7 @@
 package donnoe.amanda.constant;
 
 import donnoe.amanda.ClassFile;
-import donnoe.amanda.attributes.BootStrapMethod;
+import donnoe.amanda.attribute.BootStrapMethod;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import static donnoe.util.concurrent.Futures.getFromListFuture;

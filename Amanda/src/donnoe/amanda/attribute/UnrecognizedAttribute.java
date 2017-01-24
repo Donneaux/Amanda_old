@@ -1,4 +1,4 @@
-package donnoe.amanda.attributes;
+package donnoe.amanda.attribute;
 
 import donnoe.amanda.Amanda;
 import donnoe.amanda.ClassFile;

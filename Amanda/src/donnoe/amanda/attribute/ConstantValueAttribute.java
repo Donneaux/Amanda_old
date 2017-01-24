@@ -1,4 +1,4 @@
-package donnoe.amanda.attributes;
+package donnoe.amanda.attribute;
 
 import donnoe.amanda.ClassFile;
 import java.util.concurrent.ExecutionException;

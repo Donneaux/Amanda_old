@@ -1,10 +1,10 @@
-package donnoe.amanda.attributes.annotation;
+package donnoe.amanda.attribute.annotation;
 
 import donnoe.amanda.ClassFile;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
-import static donnoe.amanda.attributes.annotation.AnnotationValue.*;
+import static donnoe.amanda.attribute.annotation.AnnotationValue.*;
 
 /**
  *
