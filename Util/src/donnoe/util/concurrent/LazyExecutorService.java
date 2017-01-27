@@ -1,7 +1,7 @@
 package donnoe.util.concurrent;
 
 import java.util.Collection;
-import java.util.Collections;
+import static java.util.Collections.*;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.Callable;
@@ -9,16 +9,16 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
-import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class LazyExecutorService implements ExecutorService {
 
     private final ExecutorService exec;
-
+    private final Set<LazyFuture<?>> unstarted = newSetFromMap(new ConcurrentHashMap<>());
+    
+    
     public LazyExecutorService(ExecutorService exec) {
         this.exec = exec;
     }
@@ -55,7 +55,7 @@ public class LazyExecutorService implements ExecutorService {
 
     @Override
     public boolean isTerminated() {
-        return exec.isTerminated();
+        return unstarted.isEmpty() && exec.isTerminated();
     }
 
     @Override
@@ -65,7 +65,10 @@ public class LazyExecutorService implements ExecutorService {
 
     @Override
     public boolean awaitTermination(long timeout, TimeUnit unit) throws InterruptedException {
-        return exec.awaitTermination(timeout, unit);
+        long endTime = System.currentTimeMillis() + unit.toMillis(timeout);
+        Set<LazyFuture> copy = unstarted.stream().collect(Collectors.toSet());
+        copy.forEach(LazyFuture::start);
+        return exec.awaitTermination(endTime - System.currentTimeMillis(), TimeUnit.MILLISECONDS);
     }
 
     @Override
@@ -98,65 +101,50 @@ public class LazyExecutorService implements ExecutorService {
 
         public LazyFuture(Callable<V> c) {
             this.c = c;
+            unstarted.add(this);
         }
 
         @Override
         public boolean cancel(boolean mayInterruptIfRunning) {
-            Thread.dumpStack();
             synchronized (this) {
                 if (f == null) {
                     f = Futures.cancelled();
+                    unstarted.remove(this);
                     return true;
                 }
             }
             return f.cancel(mayInterruptIfRunning);
         }
 
+        private synchronized void start() {
+            if (f == null) {
+                f = exec.submit(c);
+                unstarted.remove(this);
+            }
+        }
+        
         @Override
         public V get() throws InterruptedException, ExecutionException {
-            synchronized (this) {
-                if (f == null) {
-                    f = exec.submit(c);
-                }
-            }
-            if (f == null) {
-                Thread.dumpStack();
-            }
+            start();
             return f.get();
         }
 
         @Override
         public V get(long timeout, TimeUnit unit) throws InterruptedException, ExecutionException, TimeoutException {
-            Thread.dumpStack();
-            synchronized (this) {
-                if (f == null) {
-                    f = exec.submit(c);
-                }
-            }
+            start();
             return f.get(timeout, unit);
         }
 
         @Override
         public boolean isCancelled() {
-            Thread.dumpStack();
-            synchronized (this) {
-                if (f == null) {
-                    f = exec.submit(c);
-                }
-            }
+            start();
             return f.isCancelled();
         }
 
         @Override
         public boolean isDone() {
-            synchronized (this) {
-                if (f == null) {
-                    f = exec.submit(c);
-                }
-            }
-            System.out.println(""+this +" -> " + f.isDone());
+            start();
             return f.isDone();
         }
-
     }
 }
