@@ -1,5 +1,6 @@
 package donnoe.amanda;
 
+import donnoe.util.concurrent.LazyExecutorService;
 import java.io.*;
 import static java.lang.System.*;
 import java.util.concurrent.*;
@@ -22,7 +23,8 @@ public enum Amanda {
             INSTANCE.exec.shutdownNow();
         }
     }
-    public final ExecutorService exec = newCachedThreadPool();
+    
+    public final ExecutorService exec = new LazyExecutorService(newCachedThreadPool());
 
     public void setStream(boolean verbose) {
         stream = verbose

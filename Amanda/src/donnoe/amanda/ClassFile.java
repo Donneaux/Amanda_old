@@ -48,8 +48,19 @@ public final class ClassFile extends Accessible {
             }
         }));
         stringFutures = new LookupMap<>(i -> transform(constantFutures.get(i), Object::toString));
-        strings = new LookupMap<>(i -> getNow(stringFutures.get(i)));
+        strings = new LookupMap<>(
+                i -> {
+                    try {
+                        return stringFutures.get(i).get();
+                    } catch (Exception x) {
+                        throw new CompletionException(x);
+                    }
+                });
+
         typesFutures = new LookupMap<>(i -> transform(stringFutures.get(i), this::getTypes));
+
+
+
         shortStringFutures = new LookupMap<>(i -> transform(stringFutures.get(i), s -> s.replaceFirst("(.*)\\.class", "$1")));
 
         //anything that might be read by the constants has to exist at this point
