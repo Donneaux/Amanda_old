@@ -10,7 +10,7 @@ import static java.lang.String.*;
  *
  * @author joshuadonnoe
  */
-public class PrimativeConstant extends Constant implements CompileTimeConstant, ValueConstant {
+public class PrimativeConstant extends Constant {
 
     public static PrimativeConstant readIntegerConstant(ClassFile cF) {
         return new PrimativeConstant(cF, format("%d", cF.readInt()));

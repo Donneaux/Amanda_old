@@ -7,7 +7,7 @@ import static donnoe.amanda.ClassFile.escapeString;
  *
  * @author joshuadonnoe
  */
-public class StringConstant extends UTFBasedConstant implements CompileTimeConstant {
+public class StringConstant extends UTFBasedConstant {
 
     public StringConstant(ClassFile cF) {
         super(cF);
