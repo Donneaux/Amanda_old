@@ -11,7 +11,7 @@ import java.util.concurrent.Future;
  */
 public final class BootStrapMethodsAttribute extends RecognizedAttribute {
 
-    public final Future<List<BootStrapMethod>> methods = cF.readItemFutureList(() -> new BootStrapMethod(cF), readUnsignedShort());
+    public final Future<List<BootStrapMethod>> methods = cF.readItemFutureList(() -> new BootStrapMethod(cF));
 
     /**
      *

@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
  */
 public final class Annotations extends Blob {
 
-    private final Future<List<Annotation>> annotations = readItemFutureList(() -> new Annotation(cF), readUnsignedShort());
+    private final Future<List<Annotation>> annotations = readItemFutureList(() -> new Annotation(cF));
     
     /**
      *

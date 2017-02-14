@@ -12,7 +12,7 @@ import static donnoe.amanda.attribute.annotation.AnnotationValue.*;
  */
 public final class AnnotationValueArray extends AnnotationValue {
 
-    public final Future<List<AnnotationValue>> values = readItemFutureList(() -> readAnnotationValue(cF), readUnsignedShort());
+    public final Future<List<AnnotationValue>> values = readItemFutureList(() -> readAnnotationValue(cF));
     
     /**
      *

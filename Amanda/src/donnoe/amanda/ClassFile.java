@@ -73,11 +73,14 @@ public final class ClassFile extends Accessible {
         int thisClass = readUnsignedShort();
         int superClass = readUnsignedShort();
         Future<List<String>> interfaces = readShortStringsListFuture();
-        readObjects(() -> new Member(this), toList());
+        readItemFutureList(() -> new Member(this));
+//        readObjects(() -> new Member(this), toList());
         readObjects(() -> new Member(this), toList());
         readAttributes();
     }
 
+    List<Future<Member>> fields;
+    
     //<editor-fold desc="constantMaps">
     private Map<Integer, Future<Constant>> constantFutures;
 
@@ -88,6 +91,7 @@ public final class ClassFile extends Accessible {
     protected Map<Integer, Future<String>> shortStringFutures;
     //</editor-fold>
 
+    
     public final Future<Map<Integer, Future<InnerClassInfo>>> innerClasses = transform(getAttributeFuture(InnerClassesAttribute.class), iC -> iC.innerClasses);
 
     public final Future<Map<String, String>> innerClassNames = transform(unwrap(transform(innerClasses, m -> transformList(m.keySet().stream().map(this::<ClassConstant>getConstantFuture).collect(toList())))), l -> l.stream().collect(toMap(cc -> cc.oldName, cc -> cc.newName)));

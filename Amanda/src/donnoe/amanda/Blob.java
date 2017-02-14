@@ -106,6 +106,11 @@ public abstract class Blob {
         return range(0, objectCount).mapToObj(i -> s.get()).collect(c);
     }
     
+    public final <B extends Blob> Future<List<B>> readItemFutureList(Supplier<B> s) {
+        return readItemFutureList(s, readUnsignedShort());
+    }
+
+    
     public final <B extends Blob> Future<List<B>> readItemFutureList(Supplier<B> s, int elementCount) {
         return readObjects(
                 () -> INSTANCE.queueForResolution(s.get()),
