@@ -13,7 +13,7 @@ import static donnoe.amanda.constant.MethodTypeConstant.asLiteral;
  */
 public final class InvokeDynamicConstant extends Constant {
 
-    private final Future<BootStrapMethod> method = getFromListFuture(cF.methods, readUnsignedShort());
+    private final Future<BootStrapMethod> method = getFromListFuture(cF.bootStrapMethods, readUnsignedShort());
     private final Future<NameAndTypeConstant> nAt = cF.readConstantFuture();
 
     public InvokeDynamicConstant(ClassFile cF) {

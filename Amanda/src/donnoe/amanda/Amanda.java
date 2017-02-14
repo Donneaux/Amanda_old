@@ -3,8 +3,6 @@ package donnoe.amanda;
 import donnoe.util.concurrent.LazyExecutorService;
 import java.io.*;
 import static java.lang.System.*;
-import java.util.Collections;
-import java.util.Set;
 import java.util.concurrent.*;
 import static java.util.concurrent.Executors.newCachedThreadPool;
 

@@ -40,7 +40,6 @@ public final class ClassFile extends Accessible {
                 Entry::getKey,
                 e -> INSTANCE.exec.submit(() -> e.getValue().take().get())
         ));
-        //this is a 
         constantFutures.put(0, INSTANCE.queueForResolution(new Constant(this) {
             @Override
             public void resolve() throws ExecutionException, InterruptedException {
@@ -56,16 +55,12 @@ public final class ClassFile extends Accessible {
                         throw new CompletionException(x);
                     }
                 });
-
         typesFutures = new LookupMap<>(i -> transform(stringFutures.get(i), this::getTypes));
-
-
-
         shortStringFutures = new LookupMap<>(i -> transform(stringFutures.get(i), s -> s.replaceFirst("(.*)\\.class", "$1")));
-
         //anything that might be read by the constants has to exist at this point
         qs.forEach((index, q) -> {
             if (!constantFutures.containsKey(index)) {
+                //the preceeding constant was a TwoWord
                 return;
             }
             Constant constant = readConstant(this, index);
@@ -97,7 +92,7 @@ public final class ClassFile extends Accessible {
 
     public final Future<Map<String, String>> innerClassNames = transform(unwrap(transform(innerClasses, m -> transformList(m.keySet().stream().map(this::<ClassConstant>getConstantFuture).collect(toList())))), l -> l.stream().collect(toMap(cc -> cc.oldName, cc -> cc.newName)));
 
-    public final Future<List<BootStrapMethod>> methods = unwrap(transform(getAttributeFuture(BootStrapMethodsAttribute.class), bSMA -> bSMA != null ? bSMA.methods : of(Collections.emptyList())));
+    public final Future<List<BootStrapMethod>> bootStrapMethods = unwrap(transform(getAttributeFuture(BootStrapMethodsAttribute.class), bSMA -> bSMA != null ? bSMA.methods : of(Collections.emptyList())));
 
     public DataInputStream in;
 
